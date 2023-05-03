@@ -1,9 +1,5 @@
 const express = require('express');
-const crypto = require('crypto');
 const connection = require('./database/connections');
-const csv = require('csv-parser');
-const fs = require('fs');
-
 const routes = express.Router();
 
 
@@ -17,6 +13,18 @@ routes.delete('/usuarios', async (req, res) => {
     await connection('usuarios').where({ nome }).del();
     return res.json({ message: 'Usuário excluído com sucesso!' });
   });
+  
+routes.get('/login', async (req, res) => {
+    const { email, senha } = req.query;
+
+    const usuario = await connection('usuarios').select('*').where({ email, senha }).first();
+
+    if (usuario) {
+        return res.json({ success: true, usuario , message: 'Credenciais válidas'});
+    } else {
+        return res.status(401).json({ success: false, message: 'Credenciais inválidas' });
+    }
+});
 
 routes.post('/usuarios', async (req, res) => {
     const {nome, matricula, email, curso, senha} = req.body;

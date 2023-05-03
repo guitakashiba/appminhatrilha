@@ -1,24 +1,25 @@
-import logo from './logo.svg';
-import './App.css';
+import { Button, Form, Input } from 'antd';
+import 'antd/dist/antd.css';
 
 function App() {
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
+    <Form
+      name="userForm"
+    >
+      <Form.Item
+        name="name"
+      >
+        <Input />
+      </Form.Item>
+      <Form.Item
+        name="age"
+      >
+        <Input />
+      </Form.Item>
+      <Form.Item>
+        <Button htmlType="submit">Submit</Button>
+      </Form.Item>
+    </Form>
   );
 }
 
