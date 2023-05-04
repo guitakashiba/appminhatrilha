@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react';
 import { Card, List, Checkbox } from 'antd';
 import './Inicial.css';
 import api from './services/api';
+import MeuComponente from './meuComponente';
 
 
 function TelaInicial() {
@@ -22,15 +23,19 @@ function TelaInicial() {
       });
   }, []);
 
+  const showAlert = (valor) => {
+    alert(valor)
+  }
+
   const handleCheckboxChange = (codigoDisciplina, checked, cargaHoraria) => {
     setEstadoCheckbox({
       ...estadoCheckbox,
       [codigoDisciplina]: checked,
     });
     if (checked) {
-      setCargaHorariaTotal(cargaHorariaTotal + cargaHoraria);
+      setCargaHorariaTotal(cargaHorariaTotal + Number(cargaHoraria));
     } else {
-      setCargaHorariaTotal(cargaHorariaTotal - cargaHoraria);
+      setCargaHorariaTotal(cargaHorariaTotal - Number(cargaHoraria));
     }
   };
 
@@ -39,6 +44,10 @@ function TelaInicial() {
       <Card title="Usuario" bordered={true} style={{ marginBottom: 16 }}>
         {/* conteúdo do card */}
       </Card>
+      
+      {/* <MeuComponente funcao={showAlert} name={'Takashiba'} >
+        <button>Teste</button>
+      </MeuComponente> */}
 
       <Card title="Lista de Disciplinas" bordered={true} style={{ marginBottom: 16 }}>
         <List
