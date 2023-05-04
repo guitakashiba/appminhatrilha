@@ -1,44 +1,19 @@
-.main-container {
-    display: flex;
-    flex-direction: row;
-    align-items: flex-start;
-    justify-content: center;
-    margin-top: 20px;
-  }
-  
-  .disciplinas-container {
-  width: 50%;
-  border-right: 1px solid black;
-  padding-right: 10px;
+.container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin-top: 50px;
 }
-  
-  .disciplinas-list {
-    list-style: none;
-    padding: 0;
-    margin: 0;
-    height: 500px;
-    overflow: auto;
-  }
-  
-  .carga-horaria-container {
-    width: 50%;
-    padding-right: 10px;
-  }
-  
-  .carga-horaria-title {
-    font-size: 24px;
-    font-weight: bold;
-    margin-bottom: 10px;
-  }
-  
-  .carga-horaria-list {
-    list-style: none;
-    padding: 0;
-    margin: 0;
-  }
-  
-  .carga-horaria-list li {
-    font-size: 18px;
-    margin-bottom: 5px;
-  }
-  
+
+.card {
+  width: 80%;
+  margin-bottom: 30px;
+  border: 1px solid black;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.09);
+  border-radius: 10px;
+  padding: 20px;
+}
+
+.card:hover {
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+}
