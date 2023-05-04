@@ -1,6 +1,7 @@
 import React from 'react';
 import { Button, Form, Input, Select } from 'antd';
 import './App.css';
+import api from './services/api';
 
 
 const { Option } = Select;
@@ -9,13 +10,7 @@ function App() {
 
   const onFinishSignup = async (values) => {
     try {
-      const response = await fetch('http://localhost:3333/usuarios', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(values),
-      });
+      const response = await api.user.create(values)
   
       if (!response.ok) {
         throw new Error('Erro na criação do usuário');
@@ -30,7 +25,7 @@ function App() {
   const onFinish = async (values) => {
     try {
       const { email, password } = values;
-      const response = await fetch(`http://localhost:3333/login?email=${email}&senha=${password}`);
+      const response = await api.auth.login(email,password);
   
       if (response.ok) {
         const data = await response.json();

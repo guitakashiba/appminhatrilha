@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react';
 import { Card, List, Checkbox } from 'antd';
 import './Inicial.css';
+import api from './services/api';
 
 
 function TelaInicial() {
@@ -9,7 +10,7 @@ function TelaInicial() {
   const [cargaHorariaTotal, setCargaHorariaTotal] = useState(0);
 
   useEffect(() => {
-    fetch('http://localhost:3333/disciplinas')
+    api.disciplinas.get()
       .then(response => response.json())
       .then(data => {
         setDisciplinas(data);
