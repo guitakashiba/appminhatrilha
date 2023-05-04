@@ -40,7 +40,7 @@ routes.post('/usuarios', async (req, res) => {
 });
 
 routes.get('/disciplinas', async (req, res) => {
-    const usuarios = await connection('disciplinas').select('*').where('tipo','like','Ob');
+    const usuarios = await connection('disciplinas').select('*');
     return res.json(usuarios);
 });
     
