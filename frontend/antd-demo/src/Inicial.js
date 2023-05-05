@@ -3,12 +3,41 @@ import { Card, List, Checkbox } from 'antd';
 import './Inicial.css';
 import api from './services/api';
 import MeuComponente from './meuComponente';
+import DisciplinasSelecionadas from './disciplinasSeleciondas';
 
 
 function TelaInicial() {
   const [disciplinas, setDisciplinas] = useState([]);
   const [estadoCheckbox, setEstadoCheckbox] = useState({});
-  const [cargaHorariaTotal, setCargaHorariaTotal] = useState(0);
+  const [disciplinasSelecionadas, setDisciplinasSelecionadas] = useState(
+    {
+      'Ob': {
+        tipo: 'Ob',
+        disciplinaMarcadas: [],
+        cargaHorariaTotal: 0
+      },
+      'Espc': {
+        tipo: 'Espc',
+        disciplinaMarcadas: [],
+        cargaHorariaTotal: 0
+      },
+      'Espm': {
+        tipo: 'Espm',
+        disciplinaMarcadas: [],
+        cargaHorariaTotal: 0
+      },
+      'Espcom': {
+        tipo: 'Espcom',
+        disciplinaMarcadas: [],
+        cargaHorariaTotal: 0
+      },
+      'Ope': {
+        tipo: 'Ope',
+        disciplinaMarcadas: [],
+        cargaHorariaTotal: 0
+      }
+    }
+  )
 
   useEffect(() => {
     api.disciplinas.get()
@@ -23,19 +52,28 @@ function TelaInicial() {
       });
   }, []);
 
+  useEffect(() => {
+    console.log(disciplinasSelecionadas)
+  }, [disciplinasSelecionadas])
+
   const showAlert = (valor) => {
     alert(valor)
   }
 
-  const handleCheckboxChange = (codigoDisciplina, checked, cargaHoraria) => {
+  const handleCheckboxChange = (disciplina, checked) => {
     setEstadoCheckbox({
       ...estadoCheckbox,
-      [codigoDisciplina]: checked,
+      [disciplina.codigo]: checked,
     });
     if (checked) {
-      setCargaHorariaTotal(cargaHorariaTotal + Number(cargaHoraria));
+      disciplinasSelecionadas[disciplina.tipo].disciplinaMarcadas.push(disciplina)
+      disciplinasSelecionadas[disciplina.tipo].cargaHorariaTotal += Number(disciplina.cargaHoraria)
+      setDisciplinasSelecionadas({ ...disciplinasSelecionadas })
     } else {
-      setCargaHorariaTotal(cargaHorariaTotal - Number(cargaHoraria));
+      const currentDisciplinas = disciplinasSelecionadas[disciplina.tipo].disciplinaMarcadas
+      disciplinasSelecionadas[disciplina.tipo].disciplinaMarcadas = currentDisciplinas.filter(current => current.id != disciplina.id)
+      disciplinasSelecionadas[disciplina.tipo].cargaHorariaTotal -= Number(disciplina.cargaHoraria)
+      setDisciplinasSelecionadas({ ...disciplinasSelecionadas })
     }
   };
 
@@ -44,7 +82,7 @@ function TelaInicial() {
       <Card title="Usuario" bordered={true} style={{ marginBottom: 16 }}>
         {/* conteúdo do card */}
       </Card>
-      
+
       {/* <MeuComponente funcao={showAlert} name={'Takashiba'} >
         <button>Teste</button>
       </MeuComponente> */}
@@ -57,7 +95,7 @@ function TelaInicial() {
             <List.Item>
               <Checkbox
                 checked={estadoCheckbox[item.codigo]}
-                onChange={e => handleCheckboxChange(item.codigo, e.target.checked, item.cargaHoraria)}
+                onChange={e => handleCheckboxChange(item, e.target.checked)}
               />
               <List.Item.Meta
                 title={item.codigo + " - " + item.nome}
@@ -69,10 +107,10 @@ function TelaInicial() {
           style={{ overflow: 'scroll', maxHeight: '400px' }}
         />
       </Card>
-
-      <Card title="Carga Horária" bordered={true}>
+      <DisciplinasSelecionadas  disciplinas={disciplinasSelecionadas}/>
+      {/* <Card title="Carga Horária" bordered={true}>
         <p>{cargaHorariaTotal} horas</p>
-      </Card>
+      </Card> */}
     </div>
   );
 }
