@@ -12,27 +12,27 @@ function TelaInicial() {
   const [disciplinasSelecionadas, setDisciplinasSelecionadas] = useState(
     {
       'Ob': {
-        tipo: 'Ob',
+        tipo: 'Disciplinas Obrigatórias',
         disciplinaMarcadas: [],
         cargaHorariaTotal: 0
       },
       'Espc': {
-        tipo: 'Espc',
+        tipo: 'Disciplinas Especializadas de Controle',
         disciplinaMarcadas: [],
         cargaHorariaTotal: 0
       },
       'Espm': {
-        tipo: 'Espm',
+        tipo: 'Disciplinas Especializadas de Mecatrônica',
         disciplinaMarcadas: [],
         cargaHorariaTotal: 0
       },
       'Espcom': {
-        tipo: 'Espcom',
+        tipo: 'Disciplinas Especializadas de Computação',
         disciplinaMarcadas: [],
         cargaHorariaTotal: 0
       },
       'Ope': {
-        tipo: 'Ope',
+        tipo: 'Disciplinas Optativas de Engenharia',
         disciplinaMarcadas: [],
         cargaHorariaTotal: 0
       }
@@ -77,10 +77,26 @@ function TelaInicial() {
     }
   };
 
+  const disciplinasPorTipo = disciplinas.reduce((disciplinasAgrupadas, disciplinaAtual) => {
+    if (!disciplinasAgrupadas[disciplinaAtual.tipo]) {
+      disciplinasAgrupadas[disciplinaAtual.tipo] = [];
+    }
+    disciplinasAgrupadas[disciplinaAtual.tipo].push(disciplinaAtual);
+    return disciplinasAgrupadas;
+  }, {});
+  
+  const disciplinasObrigatorias = disciplinasPorTipo['Ob'];
+  const disciplinasEspecializadasControle = disciplinasPorTipo['Espc'];
+  const disciplinasEspecializadasMecatronica = disciplinasPorTipo['Espm'];
+  const disciplinasEspecializadasComputacao = disciplinasPorTipo['Espcom'];
+  const disciplinasOptativasEngenharia = disciplinasPorTipo['Ope'];
+
+  
   return (
     <div>
       <Card title="Usuario" bordered={true} style={{ marginBottom: 16 }}>
         {/* conteúdo do card */}
+        <p></p>
       </Card>
 
       {/* <MeuComponente funcao={showAlert} name={'Takashiba'} >
