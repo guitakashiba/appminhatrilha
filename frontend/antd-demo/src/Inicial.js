@@ -4,7 +4,7 @@ import './Inicial.css';
 import api from './services/api';
 import MeuComponente from './meuComponente';
 import DisciplinasSelecionadas from './disciplinasSeleciondas';
-
+// Teste commit mathias_branch
 
 function TelaInicial() {
   const [disciplinas, setDisciplinas] = useState([]);
@@ -38,7 +38,7 @@ function TelaInicial() {
       }
     }
   )
-
+ 
   useEffect(() => {
     api.disciplinas.get()
       .then(response => response.json())
