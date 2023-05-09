@@ -1,43 +1,15 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useMemo, useCallback } from 'react';
 import { Card, List, Checkbox } from 'antd';
 import './Inicial.css';
 import api from './services/api';
-import MeuComponente from './meuComponente';
 import DisciplinasSelecionadas from './disciplinasSeleciondas';
-
 
 function TelaInicial() {
   const [disciplinas, setDisciplinas] = useState([]);
   const [estadoCheckbox, setEstadoCheckbox] = useState({});
   const [disciplinasSelecionadas, setDisciplinasSelecionadas] = useState(
-    {
-      'Ob': {
-        tipo: 'Disciplinas Obrigatórias',
-        disciplinaMarcadas: [],
-        cargaHorariaTotal: 0
-      },
-      'Espc': {
-        tipo: 'Disciplinas Especializadas de Controle',
-        disciplinaMarcadas: [],
-        cargaHorariaTotal: 0
-      },
-      'Espm': {
-        tipo: 'Disciplinas Especializadas de Mecatrônica',
-        disciplinaMarcadas: [],
-        cargaHorariaTotal: 0
-      },
-      'Espcom': {
-        tipo: 'Disciplinas Especializadas de Computação',
-        disciplinaMarcadas: [],
-        cargaHorariaTotal: 0
-      },
-      'Ope': {
-        tipo: 'Disciplinas Optativas de Engenharia',
-        disciplinaMarcadas: [],
-        cargaHorariaTotal: 0
-      }
-    }
-  )
+    // estrutura do estado inicial
+  );
 
   useEffect(() => {
     api.disciplinas.get()
@@ -52,56 +24,62 @@ function TelaInicial() {
       });
   }, []);
 
-  useEffect(() => {
-    console.log(disciplinasSelecionadas)
-  }, [disciplinasSelecionadas])
+  const cargaHorariaTipoTotal = useMemo(() => {
+    return disciplinas.reduce((total, { tipo, cargaHoraria }) => {
+      total[tipo] = (total[tipo] || 0) + Number(cargaHoraria);
+      return total;
+    }, {});
+  }, [disciplinas]);
 
-  const showAlert = (valor) => {
-    alert(valor)
-  }
+  const listaDisciplinasTipo = useMemo(() => {
+    return disciplinas.reduce((total, { tipo, codigo, nome }) => {
+      if (!total[tipo]) {
+        total[tipo] = [];
+      }
+      total[tipo].push({ codigo, nome });
+      return total;
+    }, {});
+  }, [disciplinas]);
+
+  useEffect(() => {
+    api.disciplinas.get()
+      .then(response => response.json())
+      .then(data => {
+        setDisciplinas(data);
+        const estadoInicialCheckbox = data.reduce((acc, disciplina) => ({
+          ...acc,
+          [disciplina.codigo]: false,
+        }), {});
+        setEstadoCheckbox(estadoInicialCheckbox);
+      });
+  }, []);
 
   const handleCheckboxChange = (disciplina, checked) => {
-    setEstadoCheckbox({
-      ...estadoCheckbox,
+    setEstadoCheckbox(prevState => ({
+      ...prevState,
       [disciplina.codigo]: checked,
+    }));
+    setDisciplinasSelecionadas(prevState => {
+      const novoEstado = { ...prevState };
+      if (checked) {
+        novoEstado[disciplina.tipo].disciplinaMarcadas.push(disciplina);
+        novoEstado[disciplina.tipo].cargaHorariaTotal += Number(disciplina.cargaHoraria);
+      } else {
+        const index = novoEstado[disciplina.tipo].disciplinaMarcadas.findIndex(d => d.id === disciplina.id);
+        if (index > -1) {
+          novoEstado[disciplina.tipo].disciplinaMarcadas.splice(index, 1);
+          novoEstado[disciplina.tipo].cargaHorariaTotal -= Number(disciplina.cargaHoraria);
+        }
+      }
+      return novoEstado;
     });
-    if (checked) {
-      disciplinasSelecionadas[disciplina.tipo].disciplinaMarcadas.push(disciplina)
-      disciplinasSelecionadas[disciplina.tipo].cargaHorariaTotal += Number(disciplina.cargaHoraria)
-      setDisciplinasSelecionadas({ ...disciplinasSelecionadas })
-    } else {
-      const currentDisciplinas = disciplinasSelecionadas[disciplina.tipo].disciplinaMarcadas
-      disciplinasSelecionadas[disciplina.tipo].disciplinaMarcadas = currentDisciplinas.filter(current => current.id != disciplina.id)
-      disciplinasSelecionadas[disciplina.tipo].cargaHorariaTotal -= Number(disciplina.cargaHoraria)
-      setDisciplinasSelecionadas({ ...disciplinasSelecionadas })
-    }
   };
 
-  const disciplinasPorTipo = disciplinas.reduce((disciplinasAgrupadas, disciplinaAtual) => {
-    if (!disciplinasAgrupadas[disciplinaAtual.tipo]) {
-      disciplinasAgrupadas[disciplinaAtual.tipo] = [];
-    }
-    disciplinasAgrupadas[disciplinaAtual.tipo].push(disciplinaAtual);
-    return disciplinasAgrupadas;
-  }, {});
-  
-  const disciplinasObrigatorias = disciplinasPorTipo['Ob'];
-  const disciplinasEspecializadasControle = disciplinasPorTipo['Espc'];
-  const disciplinasEspecializadasMecatronica = disciplinasPorTipo['Espm'];
-  const disciplinasEspecializadasComputacao = disciplinasPorTipo['Espcom'];
-  const disciplinasOptativasEngenharia = disciplinasPorTipo['Ope'];
-
-  
   return (
     <div>
-      <Card title="Usuario" bordered={true} style={{ marginBottom: 16 }}>
+      <Card title="Usuario" bordered={true} style={{ marginBottom: 16, height:"100%"}}>
         {/* conteúdo do card */}
-        <p></p>
       </Card>
-
-      {/* <MeuComponente funcao={showAlert} name={'Takashiba'} >
-        <button>Teste</button>
-      </MeuComponente> */}
 
       <Card title="Lista de Disciplinas" bordered={true} style={{ marginBottom: 16 }}>
         <List
@@ -123,7 +101,8 @@ function TelaInicial() {
           style={{ overflow: 'scroll', maxHeight: '400px' }}
         />
       </Card>
-      <DisciplinasSelecionadas  disciplinas={disciplinasSelecionadas}/>
+
+      <DisciplinasSelecionadas disciplinas={disciplinasSelecionadas}/>
       {/* <Card title="Carga Horária" bordered={true}>
         <p>{cargaHorariaTotal} horas</p>
       </Card> */}

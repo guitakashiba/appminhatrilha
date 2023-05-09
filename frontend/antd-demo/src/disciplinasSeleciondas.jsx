@@ -1,11 +1,22 @@
-import { Card, List, Collapse, Statistic, Col, Row } from "antd";
+import { Card, List, Collapse, Col, Row, Progress, useMemo } from "antd";
+
 import CountUp from 'react-countup';
+import './Inicial';
+
+
 const { Panel } = Collapse;
 const formatter = (value) => <CountUp end={value} separator="," />;
 
 export default function DisciplinasSelecionadas({ disciplinas }) {
 
   let totalOb = 2970;
+
+  const cargaHorariaTotal = useMemo(() => {
+    return Object.values(disciplinas).reduce((accumulator, currentObject) => {
+      return accumulator + currentObject.cargaHorariaTotal;
+    }, 0);
+  }, [disciplinas]);
+
   const dataFormatada = Object.values(disciplinas);
   return (
     <div style={{ width: '80%', padding: 20 }}>
@@ -28,20 +39,24 @@ export default function DisciplinasSelecionadas({ disciplinas }) {
               key={item.title}
             >
               <List.Item.Meta
-                // avatar={<Avatar src={item.avatar} />}
                 title={item.tipo}
-                description={<span style={{ width: 500 }}>{'Carga Horária Selecionada: ' + item.cargaHorariaTotal}</span>}
-                style={{ display: 'flex', flexDirection: 'column', width: '100%' }}
               />
               <Row gutter={16}>
-                <Col span={12}>
-                  <Statistic title="Total de Horas Necessarias" value={totalOb} formatter={formatter} />
+                <Col span={5}>
+                  <Progress type="circle" percent={Math.round(item.cargaHorariaTotal / totalOb * 100)} strokeColor={{'0%': '#108ee9', '100%': '#87d068'}}/>
+                  <div style={{ textAlign: 'center' }}>
+                    <CountUp end={totalOb} separator="," />
+                    <br />
+                    Horas Necessárias
+                  </div>
                 </Col>
-                <Col span={12}>
-                  <Statistic title="Total de Horas Concluídas" value={item.cargaHorariaTotal} precision={2} formatter={formatter} />
-                </Col>
-                <Col span={12}>
-                  <Statistic title="Total de Horas Restantes" value={totalOb-item.cargaHorariaTotal} precision={2} formatter={formatter} />
+                <Col span={5}>
+                  <Progress type="circle" percent={Math.round(item.cargaHorariaTotal / totalOb * 100)} strokeColor={{'0%': '#108ee9', '100%': '#87d068'}} />
+                  <div style={{ textAlign: 'center' }}>
+                    <CountUp end={item.cargaHorariaTotal} separator="," />
+                    <br />
+                    Horas Concluídas
+                  </div>
                 </Col>
               </Row>
 
