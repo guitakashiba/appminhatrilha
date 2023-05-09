@@ -16,7 +16,6 @@ export default function DisciplinaSelecionada({ item, totalPorTipo, restantePorT
   const total = totalPorTipo[key] || 0;
   const restante = restantePorTipo[key] || 0;
 
-  console.log(total, restante)
 
   return (
     <Card bordered={false} style={{ width: '100%', marginTop: 5 }}>

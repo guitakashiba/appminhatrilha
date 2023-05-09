@@ -89,7 +89,7 @@ function TelaInicial() {
     setTotalPorTipo(totalPorTipo); // Atualiza totalPorTipo aqui
     setRestantePorTipo(restantePorTipoAtualizado); // Atualiza restantePorTipo aqui
   };
-  console.log(totalPorTipo, restantePorTipo, "tela inicial")
+ 
 
   function agruparPorTipo(disciplinas) {
     return disciplinas.reduce((grupos, disciplina) => {
