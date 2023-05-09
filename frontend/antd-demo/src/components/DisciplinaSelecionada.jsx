@@ -15,7 +15,7 @@ export default function DisciplinaSelecionada({ item, totalPorTipo, restantePorT
   const key = tipoToKey[item.tipo];
   const total = totalPorTipo[key] || 0;
   const restante = restantePorTipo[key] || 0;
-
+  const concluido = total - restante;
 
   return (
     <Card bordered={false} style={{ width: '100%', marginTop: 5 }}>
@@ -27,22 +27,15 @@ export default function DisciplinaSelecionada({ item, totalPorTipo, restantePorT
         />
         <Row gutter={16}>
           <Col span={5}>
-          <Progress type="circle" percent={Math.round(total / total * 100)} strokeColor={{'0%': '#108ee9', '100%': '#87d068'}}/>
-
-              <div style={{ textAlign: 'center' }}>
-                <CountUp end={total} separator="," />
-                <br />
-                Horas Totais
-              </div>
-          </Col>
-          <Col span={5}>
-          <Progress type="circle" percent={Math.round(restante / total * 100)} strokeColor={{'0%': '#108ee9', '100%': '#87d068'}} />
-
-              <div style={{ textAlign: 'center' }}>
-                <CountUp end={restante} separator="," />
-                <br />
-                Horas Restantes
-              </div>
+            <Progress 
+              type="circle"
+              percent={Math.round(concluido / total * 100)} 
+              strokeColor={{'0%': '#108ee9', '100%': '#87d068'}}
+            />
+            <div style={{ textAlign: 'center' }}>
+              Horas Concluídas: 
+              <CountUp end={concluido} separator="," />
+            </div>
           </Col>
         </Row>
 

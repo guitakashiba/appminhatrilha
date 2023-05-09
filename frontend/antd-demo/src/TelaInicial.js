@@ -1,7 +1,8 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useContext } from 'react';
 import { Card, List, Checkbox } from 'antd';
 import api from './services/api';
 import ResumoDisciplinas from './components/ResumoDisciplinas';
+import UserContext from './UserContext';
 
 function TelaInicial() {
   const [disciplinas, setDisciplinas] = useState([]);
@@ -120,10 +121,17 @@ function TelaInicial() {
     return totais;
   }
 
+  const { user } = useContext(UserContext);
+
   return (
     <div style={{ width: '80%', margin: 'auto' }}>
       <Card title="Usuário" bordered={true} style={{ marginBottom: 16, height: "100%" }}>
-        {/* Conteúdo do card */}
+        {user && (
+          <div>
+            <p>Nome: {user.nome}</p>
+            <p>Matrícula: {user.matricula}</p>
+          </div>
+        )}
       </Card>
 
       {Object.entries(disciplinasPorTipo).map(([tipo, disciplinasDoTipo]) => (

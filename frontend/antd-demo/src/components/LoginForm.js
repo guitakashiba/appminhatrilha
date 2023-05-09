@@ -5,7 +5,7 @@ import { useNavigate } from 'react-router-dom';
 import { Link } from 'react-router-dom';
 
 
-const LoginForm = ({ onLogin }) => { // Adicione a prop onLogin aqui
+const LoginForm = ({ onLogin }) => {
     const navigate = useNavigate();
     const onFinish = useCallback(async (values) => {
       try {
