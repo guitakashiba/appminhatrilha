@@ -1,3 +1,4 @@
+//ListaDisciplinas.jsx
 import { Card, List, Checkbox } from 'antd';
 
 function ListaDisciplinas({ disciplinas, estadoCheckbox, handleCheckboxChange }) {

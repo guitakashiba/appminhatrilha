@@ -6,7 +6,7 @@ exports.up = function(knex) {
       const results = [];
   
       // Use csv-parser to parse the CSV file
-      fs.createReadStream('./src/disciplinas.csv')
+      fs.createReadStream('./src/DisciplinasNovas.csv')
         .pipe(csv())
         .on('data', (data) => {
           results.push(data);

@@ -1,171 +1,199 @@
-import { useState, useEffect, useContext } from 'react';
-import { Card, List, Checkbox } from 'antd';
+import React, { useState, useEffect } from 'react';
+import { Card, Cascader } from 'antd';
 import api from './services/api';
-import ResumoDisciplinas from './components/ResumoDisciplinas';
-import UserContext from './UserContext';
+import DisciplinasOpe from './components/DisciplinasOpe';
 
-function TelaInicial() {
-  const [disciplinas, setDisciplinas] = useState([]);
-  const [estadoCheckbox, setEstadoCheckbox] = useState({});
-  const [totalPorTipo, setTotalPorTipo] = useState({});
-  const [restantePorTipo, setRestantePorTipo] = useState({});
-  const [disciplinasSelecionadas, setDisciplinasSelecionadas] = useState(
-    {
-      'Ob': {
-        tipo: 'Disciplinas Obrigatórias',
-        disciplinaMarcadas: [],
-        cargaHorariaTotal: 0
-      },
-      'Espc': {
-        tipo: 'Disciplinas Especializadas de Controle',
-        disciplinaMarcadas: [],
-        cargaHorariaTotal: 0
-      },
-      'Espm': {
-        tipo: 'Disciplinas Especializadas de Mecatrônica',
-        disciplinaMarcadas: [],
-        cargaHorariaTotal: 0
-      },
-      'Espcom': {
-        tipo: 'Disciplinas Especializadas de Computação',
-        disciplinaMarcadas: [],
-        cargaHorariaTotal: 0
-      },
-      'Ope': {
-        tipo: 'Disciplinas Optativas de Engenharia',
-        disciplinaMarcadas: [],
-        cargaHorariaTotal: 0
-      }
-    }
-  )
+
+const TelaInicial = () => {
+  const [disciplinas, setDisciplinas] = useState({
+    Espc: [],
+    Espm: [],
+    Espcom: [],
+    Ope: [],
+    Ob: [],
+  });
+
+  const [selectedDisciplinas, setSelectedDisciplinas] = useState({
+    Espc: [],
+    Espm: [],
+    Espcom: [],
+    Ope: [],
+    Ob: [],
+  });
+
+  const [cargaHorariaTotal, setCargaHorariaTotal] = useState({
+    Espc: 0,
+    Espm: 0,
+    Espcom: 0,
+    Ope: 0,
+    Ob: 0,
+  });
 
   useEffect(() => {
-    api.disciplinas.get()
-      .then(response => response.json())
-      .then(data => {
-        setDisciplinas(data);
-        const estadoInicialCheckbox = {};
-        data.forEach(disciplina => {
-          estadoInicialCheckbox[disciplina.codigo] = false;
+    const fetchDisciplinas = async () => {
+      try {
+        const response = await api.disciplinas.get();
+        const data = await response.json();
+
+        const disciplinasPorTipo = data.reduce((acc, curr) => {
+          if (curr.tipo === 'Espc' || curr.tipo === 'Espm' || curr.tipo === 'Espcom' || curr.tipo === 'Ope' || curr.tipo === 'Ob') {
+            acc[curr.tipo].push(curr);
+          }
+          return acc;
+        }, {
+          Espc: [],
+          Espm: [],
+          Espcom: [],
+          Ope: [],
+          Ob: [],
         });
-        setEstadoCheckbox(estadoInicialCheckbox);
-        // Calcula a carga horária total por tipo
-        const totalPorTipo = calcularCargaHorariaTotalPorTipo(data);
-        setTotalPorTipo(totalPorTipo);
 
-        // Inicializa a carga horária restante por tipo
-        setRestantePorTipo({ ...totalPorTipo });
-      });
-  }, []);
-
-
-  const handleCheckboxChange = (disciplina, checked) => {
-    setEstadoCheckbox({
-      ...estadoCheckbox,
-      [disciplina.codigo]: checked,
-    });
-    if (checked) {
-      disciplinasSelecionadas[disciplina.tipo].disciplinaMarcadas.push(disciplina)
-      disciplinasSelecionadas[disciplina.tipo].cargaHorariaTotal += Number(disciplina.cargaHoraria)
-      setDisciplinasSelecionadas({ ...disciplinasSelecionadas })
-    } else {
-      const currentDisciplinas = disciplinasSelecionadas[disciplina.tipo].disciplinaMarcadas
-      disciplinasSelecionadas[disciplina.tipo].disciplinaMarcadas = currentDisciplinas.filter(current => current.id !== disciplina.id)
-      disciplinasSelecionadas[disciplina.tipo].cargaHorariaTotal -= Number(disciplina.cargaHoraria)
-      setDisciplinasSelecionadas({ ...disciplinasSelecionadas })
-    }
-    const totalPorTipo = calcularCargaHorariaTotalPorTipo(disciplinas);
-    const restantePorTipo = { ...totalPorTipo };
-
-    Object.keys(disciplinasSelecionadas).forEach(tipo => {
-        restantePorTipo[tipo] -= disciplinasSelecionadas[tipo].cargaHorariaTotal;
-    });
-
-    const restantePorTipoAtualizado = { ...restantePorTipo };
-    if (checked) {
-      restantePorTipoAtualizado[disciplina.tipo] -= Number(disciplina.cargaHoraria);
-    } else {
-      restantePorTipoAtualizado[disciplina.tipo] += Number(disciplina.cargaHoraria);
-    }
-    setTotalPorTipo(totalPorTipo); // Atualiza totalPorTipo aqui
-    setRestantePorTipo(restantePorTipoAtualizado); // Atualiza restantePorTipo aqui
-  };
- 
-
-  function agruparPorTipo(disciplinas) {
-    return disciplinas.reduce((grupos, disciplina) => {
-      const tipo = disciplina.tipo;
-      if (!grupos[tipo]) {
-        grupos[tipo] = [];
+        setDisciplinas(disciplinasPorTipo);
+      } catch (error) {
+        console.error("Erro ao buscar as disciplinas", error);
       }
-      grupos[tipo].push(disciplina);
-      return grupos;
-    }, {});
-  }
-
-  const disciplinasPorTipo = agruparPorTipo(disciplinas);
-
-  function calcularCargaHorariaTotalPorTipo(disciplinas) {
-    const totais = {
-      'Ob': 0,
-      'Espc': 0,
-      'Espm': 0,
-      'Espcom': 0,
-      'Ope': 0,
     };
-    
-    disciplinas.forEach(disciplina => {
-      totais[disciplina.tipo] += Number(disciplina.cargaHoraria);
+
+    fetchDisciplinas();
+  }, []);
+  console.log('Conteúdo disciplinas:',disciplinas);
+
+  const transformarDisciplinasEmOpcoes = (disciplinas, tipo) => {
+    return disciplinas[tipo].map(disciplina => ({ 
+      label: `${disciplina.codigo} - ${disciplina.nome}`, 
+      value: disciplina.id, 
+      data: disciplina }));
+  };
+
+  const transformarDisciplinasObrigatoriasEmOpcoes = (disciplinas) => {
+    const semestres = [...new Set(disciplinas.Ob.map(disciplina => disciplina.semestre))];
+
+    return semestres.map(semestre => ({
+      label: `Semestre ${semestre}`,
+      value: semestre,
+      children: disciplinas.Ob.filter(disciplina => disciplina.semestre === semestre).map(disciplina => (
+        { 
+          label: `${disciplina.codigo} - ${disciplina.nome}`, 
+          value: disciplina.id 
+        })),
+    }));
+  };
+
+  const onChange = (value, selectedOptions, tipo) => {
+    let selectedDiscs = [];
+  
+    selectedOptions.forEach(opt => {
+      if (opt.children) {
+        opt.children.forEach(child => {
+          const disc = disciplinas[tipo].find(d => d.id === child.value);
+          if (disc) selectedDiscs.push(disc);
+        });
+      } else {
+        const disc = disciplinas[tipo].find(d => d.id === opt.value);
+        if (disc) selectedDiscs.push(disc);
+      }
     });
   
-    return totais;
-  }
+    console.log('Disciplinas selecionadas:', selectedDiscs);
+  
+    setCargaHorariaTotal(prevState => {
+      const updatedCargaHorariaTotal = { ...prevState };
+  
+      // Remove a carga horária total de disciplinas desmarcadas
+      selectedDisciplinas[tipo].forEach(disc => {
+        if (disc && !selectedDiscs.find(d => d.id === disc.id)) {
+          updatedCargaHorariaTotal[tipo] -= Number(disc.cargaHoraria);
+        }
+      });
 
-  const { user } = useContext(UserContext);
+      // Adicione a carga horária total de novas disciplinas
+      selectedDiscs.forEach(disc => {
+        if (disc && !selectedDisciplinas[tipo].find(d => d.id === disc.id)) {
+          updatedCargaHorariaTotal[tipo] += Number(disc.cargaHoraria);
+        }
+      });
+  
+      console.log('Carga horária total atualizada:', updatedCargaHorariaTotal); 
+      return updatedCargaHorariaTotal;
+    });
+  
+    setSelectedDisciplinas({ ...selectedDisciplinas, [tipo]: selectedDiscs });
+  };
+  
+
+
+  const horasConcluidas = Object.values(selectedDisciplinas).reduce(
+    (total, tipo) => {
+      return (
+        total +
+        tipo.reduce((tipoTotal, disciplina) => {
+          return tipoTotal + Number(disciplina?.cargaHoraria || 0);
+        }, 0)
+      );
+    },
+    0
+  );
+  console.log(horasConcluidas);
+
+  const calcCargaHorariaTotal = {
+    Espc: disciplinas['Espc'].reduce((acc, disc) => acc + Number(disc.cargaHoraria), 0),
+    Espm: disciplinas['Espm'].reduce((acc, disc) => acc + Number(disc.cargaHoraria), 0),
+    Espcom: disciplinas['Espcom'].reduce((acc, disc) => acc + Number(disc.cargaHoraria), 0),
+    Ope: disciplinas['Ope'].reduce((acc, disc) => acc + Number(disc.cargaHoraria), 0),
+    Ob: disciplinas['Ob'].reduce((acc, disc) => acc + Number(disc.cargaHoraria), 0),
+  };
 
   return (
-    <div style={{ width: '80%', margin: 'auto' }}>
-      <Card title="Usuário" bordered={true} style={{ marginBottom: 16, height: "100%" }}>
-        {user && (
-          <div>
-            <p>Nome: {user.nome}</p>
-            <p>Matrícula: {user.matricula}</p>
-          </div>
-        )}
-      </Card>
-
-      {Object.entries(disciplinasPorTipo).map(([tipo, disciplinasDoTipo]) => (
-        <Card title={`Lista de Disciplinas - ${tipo}`} bordered={true} style={{ marginBottom: 16 }}>
-          <List
-            itemLayout="horizontal"
-            dataSource={disciplinasDoTipo}
-            bordered={true}
-            style={{ overflow: 'auto', maxHeight: '400px' }}
-            renderItem={item => (
-              <List.Item>
-                <Checkbox
-                  checked={estadoCheckbox[item.codigo]}
-                  onChange={e => handleCheckboxChange(item, e.target.checked)}
-                />
-                <List.Item.Meta
-                  title={item.codigo + " - " + item.nome}
-                  ellipsis={true}
-                />
-              </List.Item>
-            )}
-          />
-        </Card>
-      ))}
-
-        <ResumoDisciplinas
-            disciplinas={disciplinasSelecionadas}
-            totalPorTipo={totalPorTipo}
-            restantePorTipo={restantePorTipo}
+    <div>
+      <Card>
+        <Cascader
+          style={{ width: '100%', marginBottom: '1rem', overflow: 'auto' }}
+          options={transformarDisciplinasEmOpcoes(disciplinas, 'Espc')}
+          onChange={(value, selectedOptions) => onChange(value, selectedOptions, 'Espc')}
+          placeholder="Disciplinas Especializadas de Controle"
+          multiple
         />
+        <Cascader
+          style={{ width: '100%', marginBottom: '1rem' }}
+          options={transformarDisciplinasEmOpcoes(disciplinas, 'Espm')}
+          onChange={(value, selectedOptions) => onChange(value, selectedOptions, 'Espm')}
+          placeholder="Disciplinas Especializadas de Mecatronica"
+          multiple
+        />
+        <Cascader
+          style={{ width: '100%', marginBottom: '1rem' }}
+          options={transformarDisciplinasEmOpcoes(disciplinas, 'Espcom')}
+          onChange={(value, selectedOptions) => onChange(value, selectedOptions, 'Espcom')}
+          placeholder="Disciplinas Especializadas de Computação"
+          multiple
+        />
+        <Cascader
+          style={{ width: '100%', marginBottom: '1rem' }}
+          options={transformarDisciplinasEmOpcoes(disciplinas, 'Ope')}
+          onChange={(value, selectedOptions) => onChange(value, selectedOptions, 'Ope')}
+          placeholder="Disciplinas Optativas de Engenharia"
+          multiple
+        />
+        <Cascader
+          style={{ width: '100%', marginBottom: '1rem' }}
+          options={transformarDisciplinasObrigatoriasEmOpcoes(disciplinas)}
+          onChange={(value, selectedOptions) => onChange(value, selectedOptions, 'Ob')}
+          placeholder="Disciplinas Obrigatórias"
+          multiple
+        />
+      </Card>
+      <Card>
+        <p>Total de horas de Disciplinas Especializadas de Controle: {calcCargaHorariaTotal['Espc']}</p>
+        <p>Total de horas de Disciplinas Especializadas de Mecatronica: {calcCargaHorariaTotal['Espm']}</p>
+        <p>Total de horas de Disciplinas Especializadas de Computação: {calcCargaHorariaTotal['Espcom']}</p>
+        <p>Total de horas de Disciplinas Optativas de Engenharia: {calcCargaHorariaTotal['Ope']}</p>
+        <p>Total de horas de Disciplinas Obrigatórias: {calcCargaHorariaTotal['Ob']}</p>
+      </Card>
+      <Card>
+        <DisciplinasOpe />
+      </Card>
     </div>
   );
-}
-
-
+};
 
 export default TelaInicial;

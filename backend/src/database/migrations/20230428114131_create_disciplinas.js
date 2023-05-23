@@ -5,6 +5,7 @@ exports.up = function(knex) {
         table.string('nome').notNullable();
         table.string('tipo').notNullable();
         table.string('cargaHoraria').notNullable();
+        table.string('semestre').notNullable();
     })
 };
 

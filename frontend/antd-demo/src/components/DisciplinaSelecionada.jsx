@@ -1,3 +1,4 @@
+//DisciplinaSelecionada.jsx
 import { Card, List, Collapse, Col, Row, Progress } from "antd";
 import CountUp from 'react-countup';
 
@@ -16,6 +17,7 @@ export default function DisciplinaSelecionada({ item, totalPorTipo, restantePorT
   const total = totalPorTipo[key] || 0;
   const restante = restantePorTipo[key] || 0;
   const concluido = total - restante;
+
 
   return (
     <Card bordered={false} style={{ width: '100%', marginTop: 5 }}>

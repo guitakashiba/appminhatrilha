@@ -1,11 +1,12 @@
 import React, { useCallback } from 'react';
 import { Button, Form, Input, Select, notification } from 'antd';
 import api from '../services/api';
-import { Link } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 
 const { Option } = Select;
 
 const SignupForm = () => {
+  const navigate = useNavigate();
   const onFinishSignup = useCallback(async (values) => {
     try {
       const response = await api.user.create(values);
@@ -20,6 +21,10 @@ const SignupForm = () => {
         message: 'Usuário criado com sucesso!',
         duration: 3,
       });
+
+      
+      navigate('/inicial');
+
     } catch (error) {
       console.error('Erro ao enviar o formulário de inscrição:', error);
       notification.error({
@@ -27,7 +32,7 @@ const SignupForm = () => {
         duration: 3,
       });
     }
-  }, []);
+  }, [navigate]);
 
   return (
     <div className="signup-container">
@@ -96,13 +101,11 @@ const SignupForm = () => {
         </Form.Item>
 
         <Form.Item>
-            <Link to="/inicial">
-                <Button type="primary" htmlType="submit">
-                Cadastrar
-                </Button>
-            </Link>
-          
+            <Button type="primary" htmlType="submit">
+            Cadastrar
+            </Button>
         </Form.Item>
+
       </Form>
     </div>
   );
