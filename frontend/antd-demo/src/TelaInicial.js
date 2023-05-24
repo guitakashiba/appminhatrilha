@@ -144,7 +144,7 @@ const TelaInicial = () => {
   };
 
   return (
-    <div>
+    <div style={{width: '90%', maxWidth: '700px'}}>
       <Card>
         <Cascader
           style={{ width: '100%', marginBottom: '1rem', overflow: 'auto' }}
