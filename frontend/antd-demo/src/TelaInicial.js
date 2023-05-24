@@ -30,7 +30,7 @@ const TelaInicial = () => {
   });
 
   useEffect(() => {
-    const fetchDisciplinas = async () => {
+    (async () => {
       try {
         const response = await api.disciplinas.get();
         const data = await response.json();
@@ -52,9 +52,9 @@ const TelaInicial = () => {
       } catch (error) {
         console.error("Erro ao buscar as disciplinas", error);
       }
-    };
+    })();
 
-    fetchDisciplinas();
+
   }, []);
   console.log('Conteúdo disciplinas:',disciplinas);
 
@@ -83,24 +83,24 @@ const TelaInicial = () => {
     let selectedDiscs = [];
   
     selectedOptions.forEach(opt => {
-      if (opt.children) {
-        opt.children.forEach(child => {
+      if (opt[0].children && opt.length !== 2) {
+        opt[0].children.forEach(child => {
           const disc = disciplinas[tipo].find(d => d.id === child.value);
           if (disc) selectedDiscs.push(disc);
         });
       } else {
-        const disc = disciplinas[tipo].find(d => d.id === opt.value);
+        const disc = disciplinas[tipo].find(d => d.id === (opt[1] || opt[0]).value);
         if (disc) selectedDiscs.push(disc);
       }
     });
   
     console.log('Disciplinas selecionadas:', selectedDiscs);
-  
+    const currentDisciplinas = selectedDisciplinas
     setCargaHorariaTotal(prevState => {
       const updatedCargaHorariaTotal = { ...prevState };
   
       // Remove a carga horária total de disciplinas desmarcadas
-      selectedDisciplinas[tipo].forEach(disc => {
+      currentDisciplinas[tipo].forEach(disc => {
         if (disc && !selectedDiscs.find(d => d.id === disc.id)) {
           updatedCargaHorariaTotal[tipo] -= Number(disc.cargaHoraria);
         }
@@ -108,7 +108,7 @@ const TelaInicial = () => {
 
       // Adicione a carga horária total de novas disciplinas
       selectedDiscs.forEach(disc => {
-        if (disc && !selectedDisciplinas[tipo].find(d => d.id === disc.id)) {
+        if (disc && !currentDisciplinas[tipo].find(d => d.id === disc.id)) {
           updatedCargaHorariaTotal[tipo] += Number(disc.cargaHoraria);
         }
       });
