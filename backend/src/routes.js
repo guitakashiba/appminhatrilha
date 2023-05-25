@@ -43,6 +43,21 @@ routes.get('/disciplinas', async (req, res) => {
     const usuarios = await connection('disciplinas').select('*');
     return res.json(usuarios);
 });
+
+routes.put('/usuarios/:id', async (req, res) => {
+    const { id } = req.params;
+    const { disciplinas } = req.body;
+
+    try {
+        await connection('usuarios')
+            .where({ id })
+            .update({ disciplinas });
+
+        return res.json({ message: 'Disciplinas atualizadas com sucesso!' });
+    } catch (error) {
+        return res.status(500).json({ message: 'Erro ao atualizar disciplinas' });
+    }
+});
     
 
 module.exports = routes;
