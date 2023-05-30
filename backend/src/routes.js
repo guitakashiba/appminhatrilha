@@ -48,16 +48,28 @@ routes.put('/usuarios/:id', async (req, res) => {
     const { id } = req.params;
     const { disciplinas } = req.body;
 
+    console.log(req.body)
+
     try {
-        await connection('usuarios')
-            .where({ id })
-            .update({ disciplinas });
+        // Primeiro, remove todas as disciplinas atuais do usuário
+        await connection('usuarioDisciplinas').where({ userId: id }).delete();
+
+        // Em seguida, insere as novas disciplinas
+        const usuarioDisciplinas = disciplinas.map(({ userId, disciplinaId }) => {
+            return {
+                userId,
+                disciplinaId
+            };
+        });
+
+        await connection('usuarioDisciplinas').insert(usuarioDisciplinas);
 
         return res.json({ message: 'Disciplinas atualizadas com sucesso!' });
     } catch (error) {
         return res.status(500).json({ message: 'Erro ao atualizar disciplinas' });
     }
 });
+
     
 
 module.exports = routes;

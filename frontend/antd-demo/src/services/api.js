@@ -17,10 +17,21 @@ export default {
         body: JSON.stringify(values),
       });
     },
-  },
+    update: (id, values) => {
+      return fetch(`${BASE_URL}/usuarios/${id}`, {
+        method: 'PUT',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(values),
+      });
+    },
+},
+
   disciplinas: {
     get: () => { 
       return fetch(`${BASE_URL}/disciplinas`)
     }
   }
+
 }

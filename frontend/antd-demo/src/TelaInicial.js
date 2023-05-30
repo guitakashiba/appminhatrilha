@@ -1,13 +1,9 @@
 //TelaInicial.js
 import React, { useState, useEffect } from 'react';
-import { Card, Cascader, Progress, message, Col, Row, Menu } from 'antd';
+import { Card, Cascader, Progress, message, Col, Row, Button, notification } from 'antd';
 import api from './services/api';
-import SidebarMenu from './components/SidebarMenu';
-import Sider from 'antd/es/layout/Sider';
-import { Content } from 'antd/es/layout/layout';
 
-
-const TelaInicial = (props) => {
+const TelaInicial = () => {
   const [disciplinas, setDisciplinas] = useState({
     Espc: [],
     Espm: [],
@@ -44,6 +40,8 @@ const TelaInicial = (props) => {
     Comp: false,
   });
 
+  const [user, setUser] = useState(null);
+
   //API com o banco de dados
   useEffect(() => {
     (async () => {
@@ -70,9 +68,11 @@ const TelaInicial = (props) => {
       } catch (error) {
         console.error("Erro ao buscar as disciplinas", error);
       }
+      const storedUser = localStorage.getItem('user');
+      if (storedUser) {
+        setUser(JSON.parse(storedUser));
+      }
     })();
-
-
   }, []);
 
   console.log('Conteúdo disciplinas:',disciplinas);
@@ -138,9 +138,6 @@ const TelaInicial = (props) => {
 
     });
 
-    //Teste API disciplinas-alunos
-    props.onDisciplinaChange(selectedDisciplinas);
-
     //[INICIO] Cálculo das cargas Horárias de cada tipo seguindo as exigências do Curriculo [INICIO]
     const novaCargaHorariaTotal = { ...cargaHorariaTotal };
     novaCargaHorariaTotal[tipo] = selectedDiscs.reduce(
@@ -203,6 +200,7 @@ const TelaInicial = (props) => {
     setSelectedDisciplinas({ ...selectedDisciplinas, [tipo]: selectedDiscs });
   };
   
+
   //debugger
   //Cálculo das cargas Horárias total de cada tipo
   const calcCargaHorariaTotal = {
@@ -226,9 +224,45 @@ const TelaInicial = (props) => {
   //debugger
   console.log("Disciplinas Selecionadas", selectedDisciplinas);
 
-  return (
+  const salvarDisciplinas = async() => {
+    try {
+      const user = JSON.parse(localStorage.getItem('user')).usuario;
 
+        if (!user) {
+            throw new Error('Usuário não logado');
+        }
+
+        const disciplinasToUpdate = [].concat(...Object.values(selectedDisciplinas)).map(disciplina => ({
+          usuarioId: user.id,
+          disciplinaId: disciplina.id,
+        }));
+
+        const response = await api.user.update(user.id, { disciplinas: disciplinasToUpdate });
+
+        if (!response.ok) {
+            throw new Error('Erro ao salvar disciplinas');
+        }
+
+        notification.success({
+            message: 'Disciplinas salvas com sucesso!',
+            duration: 3,
+        });
+        
+    } catch (error) {
+        console.error('Erro ao salvar disciplinas:', error);
+        notification.error({
+            message: 'Erro ao salvar disciplinas. Por favor, tente novamente.',
+            duration: 3,
+        });
+    }
+  };
+
+
+  return (
     <div style={{width: '90%', maxWidth: '1300px'}}>
+      <Card>
+        <h2>Bem-vindo, {user?.usuario?.nome}</h2>
+      </Card>
       <Card title="Disciplinas Obrigatórias">
         <Cascader
           style={{ width: '100%', marginBottom: '1rem' }}
@@ -365,8 +399,10 @@ const TelaInicial = (props) => {
         <p>Horas concluídas: {cargaHorariaTotal['Comp']}</p>
         </div>
       </Card>
+      <Button type='primary' block onClick={salvarDisciplinas}>
+          Salvar
+      </Button>
     </div>
-    
   );
 };
 

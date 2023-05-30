@@ -20,6 +20,8 @@ const LoginForm = ({ onLogin }) => {
           navigate('/inicial');
           // Armazena os detalhes do usuário no estado do componente ou em um cookie
           // Redireciona o usuário para a página principal
+          localStorage.setItem('user', JSON.stringify(data));
+
         } else {
           throw new Error('Credenciais inválidas');
         }
@@ -58,6 +60,7 @@ const LoginForm = ({ onLogin }) => {
           <Button type="primary" htmlType="submit">
             Login
           </Button>
+          
         </Form.Item>
         <Form.Item>
           <h2>Ainda não possui conta? Faça o seu cadastro já!</h2>
