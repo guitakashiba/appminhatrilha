@@ -55,9 +55,9 @@ routes.put('/usuarios/:id', async (req, res) => {
         await connection('usuarioDisciplinas').where({ userId: id }).delete();
 
         // Em seguida, insere as novas disciplinas
-        const usuarioDisciplinas = disciplinas.map(({ userId, disciplinaId }) => {
+        const usuarioDisciplinas = disciplinas.map(({ usuarioId, disciplinaId }) => {
             return {
-                userId,
+                userId: usuarioId,
                 disciplinaId
             };
         });
