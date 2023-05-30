@@ -259,7 +259,7 @@ const TelaInicial = () => {
 
 
   return (
-    <div style={{width: '90%', maxWidth: '1300px'}}>
+    <div style={{width: '100%', display: 'flex', flexDirection: 'column', gap: 10}}>
       <Card>
         <h2>Bem-vindo, {user?.usuario?.nome}</h2>
       </Card>

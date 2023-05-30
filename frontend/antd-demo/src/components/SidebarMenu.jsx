@@ -18,8 +18,7 @@ const headerStyle = {
 };
 
 const contentStyle = {
-  padding: '24px',
-  backgroundColor: '#108ee9',
+  padding: '16px',
   maxHeight: '100vh',
   overflow: 'auto'
 };
