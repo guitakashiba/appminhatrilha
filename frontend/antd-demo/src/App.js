@@ -4,10 +4,11 @@ import './App.css';
 import LoginForm from './components/LoginForm';
 import SignupForm from './components/SignupForm';
 import TelaInicial from './TelaInicial';
-import HistoricoDis from  './components/HistoricoDis'
+import HistoricoDis from './components/HistoricoDis'
 import UserContext from './UserContext';
 import api from './services/api';
 import { Route, Routes, BrowserRouter as Router } from 'react-router-dom';
+import SidebarMenu from './components/SidebarMenu';
 
 function App() {
   const [user, setUser] = useState(null); // Crie um estado para o usuário
@@ -31,7 +32,7 @@ function App() {
       }
     }
   };
-  
+
   useEffect(() => {
     updateUserDisciplinas();
   }, [user]);
@@ -43,8 +44,10 @@ function App() {
           <Routes>
             <Route path="/" element={<LoginForm onLogin={handleLogin} />} />
             <Route path="/signup" element={<SignupForm />} />
-            <Route path="/inicial" element={<TelaInicial onDisciplinaChange={handleDisciplinaChange} />} />
-            <Route path="/historico" element={<HistoricoDis />}/>
+            <Route path="/" element={<SidebarMenu />}>
+              <Route path="/inicial" element={<TelaInicial onDisciplinaChange={handleDisciplinaChange} />} />
+              <Route path="/historico" element={<HistoricoDis />} />
+            </Route>
           </Routes>
         </UserContext.Provider>
       </Router>

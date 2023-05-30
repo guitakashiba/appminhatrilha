@@ -5,6 +5,8 @@ import {
   TeamOutlined,
   LogoutOutlined,
 } from '@ant-design/icons';
+import { Outlet } from 'react-router-dom';
+import { useNavigate } from "react-router-dom";
 const { Header, Sider, Content } = Layout;
 
 const headerStyle = {
@@ -16,9 +18,10 @@ const headerStyle = {
 };
 
 const contentStyle = {
-  minHeight: 'calc(100vh - 64px)',
   padding: '24px',
   backgroundColor: '#108ee9',
+  maxHeight: '100vh',
+  overflow: 'auto'
 };
 
 const siderStyle = {
@@ -28,23 +31,35 @@ const siderStyle = {
 };
 
 const layoutStyle = {
-  display: 'flex',
+  width: '100%',
+  maxHeight: '100vh'
 };
 
-const SidebarMenu = () => (
-  <Layout style={layoutStyle}>
+const SidebarMenu = () => {
+
+  const navigate = useNavigate()
+
+  const redirectTo = (path) => {
+    navigate(path)
+  }
+
+  return <Layout style={layoutStyle}>
     <Sider style={siderStyle}>
-      <Menu theme="dark" mode="inline" defaultSelectedKeys={['1']}>
-        <Menu.Item key="1" icon={<HomeOutlined />}>
+      <Menu
+        onClick={({ key: path }) => redirectTo(path)}
+        theme="dark" mode="inline"
+        defaultSelectedKeys={['1']}
+      >
+        <Menu.Item key="/inicial" icon={<HomeOutlined />}>
           Home
         </Menu.Item>
-        <Menu.Item key="2" icon={<HistoryOutlined />}>
+        <Menu.Item key="/historico" icon={<HistoryOutlined />}>
           Histórico
         </Menu.Item>
-        <Menu.Item key="3" icon={<TeamOutlined />}>
+        <Menu.Item key="/" icon={<TeamOutlined />}>
           Sobre nós
         </Menu.Item>
-        <Menu.Item key="4" icon={<LogoutOutlined />}>
+        <Menu.Item key="/" icon={<LogoutOutlined />}>
           Logout
         </Menu.Item>
       </Menu>
@@ -52,10 +67,10 @@ const SidebarMenu = () => (
     <Layout>
       <Header style={headerStyle}>Minha Trilha App</Header>
       <Content style={contentStyle}>
-        {/* Aqui você pode colocar o conteúdo do seu componente */}
+        <Outlet />
       </Content>
     </Layout>
   </Layout>
-);
+};
 
 export default SidebarMenu;
