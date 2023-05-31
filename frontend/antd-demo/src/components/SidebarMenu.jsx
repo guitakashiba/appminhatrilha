@@ -7,6 +7,7 @@ import {
 } from '@ant-design/icons';
 import { Outlet } from 'react-router-dom';
 import { useNavigate } from "react-router-dom";
+
 const { Header, Sider, Content } = Layout;
 
 const headerStyle = {
@@ -14,7 +15,8 @@ const headerStyle = {
   height: 64,
   paddingInline: 50,
   lineHeight: '64px',
-  backgroundColor: '#7dbcea',
+  backgroundColor: '#142d4c',
+  textAlign: 'center',
 };
 
 const contentStyle = {
@@ -26,7 +28,7 @@ const contentStyle = {
 const siderStyle = {
   width: 256,
   minHeight: '100vh',
-  backgroundColor: '#3ba0e9',
+  backgroundColor: '#142d4c',
 };
 
 const layoutStyle = {
@@ -55,7 +57,7 @@ const SidebarMenu = () => {
         <Menu.Item key="/historico" icon={<HistoryOutlined />}>
           Histórico
         </Menu.Item>
-        <Menu.Item key="/" icon={<TeamOutlined />}>
+        <Menu.Item key="/sobrenos" icon={<TeamOutlined />}>
           Sobre nós
         </Menu.Item>
         <Menu.Item key="/" icon={<LogoutOutlined />}>
