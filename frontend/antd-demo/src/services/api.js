@@ -6,6 +6,9 @@ export default {
     login: (email, password) => {
       return fetch(`${BASE_URL}/login?email=${email}&senha=${password}`)
     },
+    logout: () => {
+      return fetch(`${BASE_URL}/logout`);
+    }
   },
   user: {
     create: (values) => {
@@ -31,7 +34,11 @@ export default {
   disciplinas: {
     get: () => { 
       return fetch(`${BASE_URL}/disciplinas`)
+    },
+    getConcluidas: (userId) => {
+      return fetch(`${BASE_URL}/usuarios/${userId}/disciplinas`);
     }
   }
 
+  
 }

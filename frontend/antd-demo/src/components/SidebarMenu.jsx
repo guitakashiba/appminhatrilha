@@ -60,7 +60,7 @@ const SidebarMenu = () => {
         <Menu.Item key="/sobrenos" icon={<TeamOutlined />}>
           Sobre nós
         </Menu.Item>
-        <Menu.Item key="/" icon={<LogoutOutlined />}>
+        <Menu.Item key="/logout" icon={<LogoutOutlined />}>
           Logout
         </Menu.Item>
       </Menu>

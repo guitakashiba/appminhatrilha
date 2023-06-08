@@ -1,9 +1,46 @@
-//HistoricoDis.js
-import { useState } from 'react';
-import TelaInicial from '../TelaInicial'; 
+import React, { useState, useEffect, useContext } from 'react';
+import { List } from 'antd';
+import UserContext from '../UserContext';
+import api from '../services/api';
 
-const PagHistorico = () => {
+const HistoricoDis = () => {
+  const [disciplinas, setDisciplinas] = useState([]);
+  const { user } = useContext(UserContext);
 
-}
+  useEffect(() => {
+    const fetchDisciplinas = async () => {
+        console.log("fetch foi chamado")
+      if (user) {
+        console.log(user)
+        try {
+          const res = await api.disciplinas.getConcluidas(user.id);
+          const data = await res.json();
+          setDisciplinas(data);
+          console.log(data)
+        } catch (err) {
+          console.error(err);
+        }
+      }
+    };
+    
+    fetchDisciplinas().catch(err => console.error(err));
+  }, [user]);
 
-export default PagHistorico;
+  return (
+    <List
+      itemLayout="horizontal"
+      dataSource={disciplinas}
+      renderItem={disciplina => (
+        <List.Item>
+          <List.Item.Meta
+            //avatar={<Avatar icon={<UserOutlined />} />}
+            title={`${disciplina.codigo} - ${disciplina.nome}`}
+            description={`Carga Horária: ${disciplina.cargaHoraria}`}
+          />
+        </List.Item>
+      )}
+    />
+  );
+};
+
+export default HistoricoDis;

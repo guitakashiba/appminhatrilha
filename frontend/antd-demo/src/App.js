@@ -7,7 +7,7 @@ import TelaInicial from './TelaInicial';
 import HistoricoDis from './components/HistoricoDis'
 import UserContext from './UserContext';
 import api from './services/api';
-import { Route, Routes, BrowserRouter as Router } from 'react-router-dom';
+import { Route, Routes, BrowserRouter as Router} from 'react-router-dom';
 import SidebarMenu from './components/SidebarMenu';
 import SobreNos from './components/SobreNos';
 
@@ -46,9 +46,9 @@ function App() {
             <Route path="/" element={<LoginForm onLogin={handleLogin} />} />
             <Route path="/signup" element={<SignupForm />} />
             <Route path="/" element={<SidebarMenu />}>
-              <Route path="/inicial" element={<TelaInicial onDisciplinaChange={handleDisciplinaChange} />} />
-              <Route path="/historico" element={<HistoricoDis />} />
-              <Route path="/sobrenos" element={<SobreNos />} />
+              <Route path="inicial" element={<TelaInicial onDisciplinaChange={handleDisciplinaChange} />} />
+              <Route path="historico" element={<HistoricoDis />} />
+              <Route path="sobrenos" element={<SobreNos />} />
             </Route>
           </Routes>
         </UserContext.Provider>

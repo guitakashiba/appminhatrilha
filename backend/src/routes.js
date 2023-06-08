@@ -70,6 +70,55 @@ routes.put('/usuarios/:id', async (req, res) => {
     }
 });
 
+// Rota de logout
+routes.get('/logout', (req, res) => {
+    req.session.destroy(); // ou invalidar token, dependendo do método de autenticação
+    res.send({ msg: "Usuário deslogado com sucesso" });
+  });
+/* 
+routes.get('/usuarios/:id/disciplinas', async (req, res) => {
+    const { id } = req.params;
+
+    try {
+        const usuarioDisciplinas = await connection('usuarioDisciplinas')
+            .where('userId', id)
+            .select('*');
+        return res.json(usuarioDisciplinas);
+    } catch (error) {
+        console.error(error);
+        res.status(500).json({ error: 'An error occurred while fetching data.' });
+    }
+});
+*/
+routes.get('/usuarios/:id/disciplinas', async (req, res) => {
+    const { id } = req.params;
     
+    try {
+        // Selecione todas as disciplinas para este usuário
+        const usuarioDisciplinas = await connection('usuarioDisciplinas')
+            .where('userId', id)
+            .select('*');
+        
+        const disciplinas = [];
+
+        // Para cada disciplina do usuário, recupera os detalhes da disciplina
+        for (let ud of usuarioDisciplinas) {
+            const disciplina = await connection('disciplinas')
+                .where('id', ud.disciplinaId)
+                .first();
+            
+            if (disciplina) {
+                disciplinas.push(disciplina);
+            }
+        }
+
+        return res.json(disciplinas);
+    } catch (error) {
+        console.error(error);
+        return res.status(500).json({ message: 'Erro ao obter disciplinas' });
+    }
+});
+
+  
 
 module.exports = routes;
