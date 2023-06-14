@@ -1,6 +1,8 @@
 const express = require('express');
 const connection = require('./database/connections');
 const routes = express.Router();
+const bcrypt = require('bcrypt');
+const saltRounds = 10;
 
 
 routes.get('/usuarios', async (req, res) => {
@@ -13,7 +15,7 @@ routes.delete('/usuarios', async (req, res) => {
     await connection('usuarios').where({ nome }).del();
     return res.json({ message: 'Usuário excluído com sucesso!' });
   });
-  
+  /*
 routes.get('/login', async (req, res) => {
     const { email, senha } = req.query;
 
@@ -38,6 +40,60 @@ routes.post('/usuarios', async (req, res) => {
     });
     return res.json('Usuario criado com sucesso!');
 });
+*/
+
+// compare a senha fornecida com a senha criptografada
+routes.post('/login', async (req, res) => {
+    const { email, senha } = req.body;
+
+    try {
+        // Buscar o usuário pelo email.
+        const usuario = await connection('usuarios').select('*').where({ email }).first();
+
+        // Se o usuário não existir ou a senha estiver incorreta, retornar um erro.
+        if (!usuario || !await bcrypt.compare(senha, usuario.senha)) {
+            return res.status(401).json({ success: false, message: 'Credenciais inválidas.' });
+        }
+
+        // Se o login for bem-sucedido, retornar os detalhes do usuário.
+        return res.json({ success: true, usuario, message: 'Credenciais válidas.' });
+    } catch (error) {
+        console.error(error);
+        return res.status(500).json({ success: false, message: 'Erro ao fazer login.' });
+    }
+});
+
+
+routes.post('/usuarios', async (req, res) => {
+    const {nome, matricula, email, curso, senha} = req.body;
+
+    try {
+        // Verificar se o e-mail ou a matrícula já existem no banco de dados.
+        const existingUser = await connection('usuarios').select('*').where({ email }).orWhere({ matricula }).first();
+        
+        if (existingUser) {
+            return res.status(400).json({ success: false, message: 'E-mail ou matrícula já estão em uso.' });
+        }
+
+        // Criptografar a senha antes de inserir no banco de dados.
+        const hashedPassword = await bcrypt.hash(senha, saltRounds);
+
+        await connection('usuarios').insert({
+            nome,
+            matricula,
+            email,
+            curso,
+            senha: hashedPassword
+        });
+
+        return res.json({ success: true, message: 'Usuário registrado com sucesso.' });
+    } catch (error) {
+        console.error(error);
+        return res.status(500).json({ success: false, message: 'Erro ao registrar o usuário.' });
+    }
+});
+
+
 
 routes.get('/disciplinas', async (req, res) => {
     const usuarios = await connection('disciplinas').select('*');
@@ -72,24 +128,16 @@ routes.put('/usuarios/:id', async (req, res) => {
 
 // Rota de logout
 routes.get('/logout', (req, res) => {
-    req.session.destroy(); // ou invalidar token, dependendo do método de autenticação
-    res.send({ msg: "Usuário deslogado com sucesso" });
-  });
-/* 
-routes.get('/usuarios/:id/disciplinas', async (req, res) => {
-    const { id } = req.params;
-
-    try {
-        const usuarioDisciplinas = await connection('usuarioDisciplinas')
-            .where('userId', id)
-            .select('*');
-        return res.json(usuarioDisciplinas);
-    } catch (error) {
-        console.error(error);
-        res.status(500).json({ error: 'An error occurred while fetching data.' });
-    }
+    req.session.destroy(err => {
+        if (err) {
+            console.error(err);
+            return res.status(500).json({ success: false, message: 'Erro ao fazer logout.' });
+        } else {
+            return res.json({ success: true, message: 'Usuário deslogado com sucesso.' });
+        }
+    });
 });
-*/
+
 routes.get('/usuarios/:id/disciplinas', async (req, res) => {
     const { id } = req.params;
     

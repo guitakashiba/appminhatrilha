@@ -5,7 +5,7 @@ import api from '../services/api';
 import { useNavigate } from 'react-router-dom';
 import { Link } from 'react-router-dom';
 
-
+/*
 const LoginForm = ({ onLogin }) => {
     const navigate = useNavigate();
     const onFinish = useCallback(async (values) => {
@@ -33,6 +33,35 @@ const LoginForm = ({ onLogin }) => {
         });
       }
     }, [onLogin, navigate]);
+*/
+
+const LoginForm = ({ onLogin }) => {
+  const navigate = useNavigate();
+  const onFinish = useCallback(async (values) => {
+    try {
+      const { email, password } = values;
+      const response = await api.auth.login(email, password);
+
+      if (response.success) {
+        const data = response.usuario;
+        console.log(data);
+        onLogin(data);
+        navigate('/inicial');
+        // Armazena os detalhes do usuário no estado do componente ou em um cookie
+        // Redireciona o usuário para a página principal
+        localStorage.setItem('user', JSON.stringify(data));
+
+      } else {
+        throw new Error(response.message || 'Erro desconhecido');
+      }
+    } catch (error) {
+      console.error('Erro ao fazer login:', error);
+      notification.error({
+        message: 'Erro ao fazer login. Por favor, tente novamente.',
+        duration: 3,
+      });
+    }
+  }, [onLogin, navigate]);
 
   return (
     <div className="login-container">
