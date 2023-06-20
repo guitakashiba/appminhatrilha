@@ -75,7 +75,6 @@ const TelaInicial = () => {
     })();
   }, []);
 
-  console.log('Conteúdo disciplinas:',disciplinas);
 
   //Função que transforma as disciplinas em opções dentro dos Cascaders
   const transformarDisciplinasEmOpcoes = (disciplinas, tipo) => {
@@ -221,12 +220,8 @@ const TelaInicial = () => {
     Comp: 54, 
   };
   
-  //debugger
-  console.log("Disciplinas Selecionadas", selectedDisciplinas);
-
   const salvarDisciplinas = async() => {
     try {
-      const user = JSON.parse(localStorage.getItem('user')).usuario;
 
         if (!user) {
             throw new Error('Usuário não logado');
@@ -261,7 +256,7 @@ const TelaInicial = () => {
   return (
     <div style={{width: '100%', display: 'flex', flexDirection: 'column', gap: 10}}>
       <Card>
-        <h2>Bem-vindo, {user?.usuario?.nome}</h2>
+        <h2>Bem-vindo, {user?.nome}</h2>
       </Card>
       <Card title="Disciplinas Obrigatórias">
         <Cascader
