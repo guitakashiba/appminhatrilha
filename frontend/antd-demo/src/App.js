@@ -41,7 +41,7 @@ function App() {
   return (
     <div className="app-container">
       <Router>
-        <UserContext.Provider value={{ user }}>
+        <UserContext.Provider value={{ user, setUser }}>
           <Routes>
             <Route path="/" element={<LoginForm onLogin={handleLogin} />} />
             <Route path="/signup" element={<SignupForm />} />

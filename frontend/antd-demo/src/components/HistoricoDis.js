@@ -1,3 +1,4 @@
+//HistoricoDis.js
 import React, { useState, useEffect, useContext } from 'react';
 import { List } from 'antd';
 import UserContext from '../UserContext';
@@ -5,13 +6,16 @@ import api from '../services/api';
 
 const HistoricoDis = () => {
   const [disciplinas, setDisciplinas] = useState([]);
-  const { user } = useContext(UserContext);
+  //const { user } = useContext(UserContext);
 
+  /*
   useEffect(() => {
     const fetchDisciplinas = async () => {
-        console.log("fetch foi chamado")
+      console.log("fetch foi chamado")
+      console.log(user)
+      
       if (user) {
-        console.log(user)
+
         try {
           const res = await api.disciplinas.getConcluidas(user.id);
           const data = await res.json();
@@ -25,6 +29,30 @@ const HistoricoDis = () => {
     
     fetchDisciplinas().catch(err => console.error(err));
   }, [user]);
+  */
+  useEffect(() => {
+    const fetchDisciplinas = async () => {
+      console.log("fetch foi chamado");
+      
+      // Recuperar os dados do usuário do localStorage
+      const storedUser = JSON.parse(localStorage.getItem('user'));
+        
+      if (storedUser && storedUser.id) { 
+        try {
+          const res = await api.disciplinas.getConcluidas(storedUser.id);
+          const data = await res.json();
+          setDisciplinas(data);
+          console.log(data);
+        } catch (err) {
+          console.error(err);
+        }
+      }
+      console.log(storedUser)
+    };
+      
+    fetchDisciplinas().catch(err => console.error(err));
+  }, []);
+  
 
   return (
     <List
