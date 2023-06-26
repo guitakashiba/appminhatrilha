@@ -42,6 +42,8 @@ const TelaInicial = () => {
 
   const [user, setUser] = useState(null);
 
+  const [selectedDisHistorico, setSelectedDisHistorico] = useState();
+
   //API com o banco de dados
   useEffect(() => {
     (async () => {
@@ -137,7 +139,7 @@ const TelaInicial = () => {
 
     });
 
-    //[INICIO] Cálculo das cargas Horárias de cada tipo seguindo as exigências do Curriculo [INICIO]
+//******************[INICIO] Cálculo das cargas Horárias de cada tipo seguindo as exigências do Curriculo [INICIO]
     const novaCargaHorariaTotal = { ...cargaHorariaTotal };
     novaCargaHorariaTotal[tipo] = selectedDiscs.reduce(
       (total, disc) => total + Number(disc.cargaHoraria || 0),
@@ -149,7 +151,7 @@ const TelaInicial = () => {
     if (tipo === 'Espc' || tipo === 'Espm' || tipo === 'Espcom') {
       if (novaCargaHorariaTotal[tipo] >= 252 && !messageShown[tipo]) {
         message.success({
-          content: 'Você atingiu as horas necessárias dentro de uma Especializada',
+          content: 'Você atingiu as horas necessárias DENTRO DE UMA ESPECIALIZADA.',
           key: tipo,
           duration: 3,
           onClose: () =>
@@ -158,19 +160,21 @@ const TelaInicial = () => {
         setMessageShown((prev) => ({ ...prev, [tipo]: true }));
       };
     };
+    console.log("Carga horaria: ",novaCargaHorariaTotal);
 
-    if (
-      cargaHorariaTotal['Espc'] + cargaHorariaTotal['Espm'] + cargaHorariaTotal['Espcom'] >= 540) {
+    if (cargaHorariaTotal['Espc'] + cargaHorariaTotal['Espm'] + cargaHorariaTotal['Espcom'] >= 540 && messageShown) {
       message.success({
-        content: 'Você atingiu a carga horária exigida nas Disciplinas Especializadas',
-        key: 'especializadas',
+        content: 'Você atingiu a carga horária exigida NAS DISCIPLINAS ESPECIALIZADAS.',
+        //key: 'especializadas',
+        key: tipo,
         duration: 3,
         onClose: () =>
           setMessageShown((prev) => ({ ...prev, 'Espc': false, 'Espm': false, 'Espcom': false })),
       });
+      console.log("saiu da msg", [tipo]);
+
       setMessageShown((prev) => ({ ...prev, 'Espc': true, 'Espm': true, 'Espcom': true }));
     }
-    
 
     if (tipo === 'Ope' && novaCargaHorariaTotal[tipo] >= 144 && !messageShown[tipo]) {
       message.success({
@@ -180,6 +184,7 @@ const TelaInicial = () => {
         onClose: () =>
           setMessageShown((prev) => ({ ...prev, [tipo]: false })),
       });
+      console.log("Dentro de OPE: ", [tipo]);
       setMessageShown((prev) => ({ ...prev, [tipo]: true }));
     }
 
@@ -193,14 +198,18 @@ const TelaInicial = () => {
       });
       setMessageShown((prev) => ({ ...prev, [tipo]: true }));
     }
-    //[FIM] Cálculo das cargas Horárias de cada tipo seguindo as exigências do Curriculo [FIM]
+//******************[FIM] Cálculo das cargas Horárias de cada tipo seguindo as exigências do Curriculo [FIM]
     
   
     setSelectedDisciplinas({ ...selectedDisciplinas, [tipo]: selectedDiscs });
+
+    const storedSelectedDisciplinas = JSON.parse(localStorage.getItem('selectedDisciplinas'));
+
+    console.log("Disciplinas Selecionadas Salvas: ", storedSelectedDisciplinas);
+
+
   };
   
-
-  //debugger
   //Cálculo das cargas Horárias total de cada tipo
   const calcCargaHorariaTotal = {
     Espc: disciplinas['Espc'].reduce((acc, disc) => acc + Number(disc.cargaHoraria), 0),
@@ -219,7 +228,7 @@ const TelaInicial = () => {
     Ope: 144,
     Comp: 54, 
   };
-  
+
   const salvarDisciplinas = async() => {
     try {
 
@@ -251,7 +260,6 @@ const TelaInicial = () => {
         });
     }
   };
-
 
   return (
     <div style={{width: '100%', display: 'flex', flexDirection: 'column', gap: 10}}>

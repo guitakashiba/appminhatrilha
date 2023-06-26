@@ -1,35 +1,12 @@
 //HistoricoDis.js
-import React, { useState, useEffect, useContext } from 'react';
+import React, { useState, useEffect } from 'react';
 import { List } from 'antd';
 import UserContext from '../UserContext';
 import api from '../services/api';
 
 const HistoricoDis = () => {
   const [disciplinas, setDisciplinas] = useState([]);
-  //const { user } = useContext(UserContext);
 
-  /*
-  useEffect(() => {
-    const fetchDisciplinas = async () => {
-      console.log("fetch foi chamado")
-      console.log(user)
-      
-      if (user) {
-
-        try {
-          const res = await api.disciplinas.getConcluidas(user.id);
-          const data = await res.json();
-          setDisciplinas(data);
-          console.log(data)
-        } catch (err) {
-          console.error(err);
-        }
-      }
-    };
-    
-    fetchDisciplinas().catch(err => console.error(err));
-  }, [user]);
-  */
   useEffect(() => {
     const fetchDisciplinas = async () => {
       console.log("fetch foi chamado");
@@ -42,12 +19,11 @@ const HistoricoDis = () => {
           const res = await api.disciplinas.getConcluidas(storedUser.id);
           const data = await res.json();
           setDisciplinas(data);
-          console.log(data);
+          console.log("Disciplinas Salvas: ", data);
         } catch (err) {
           console.error(err);
         }
       }
-      console.log(storedUser)
     };
       
     fetchDisciplinas().catch(err => console.error(err));
@@ -61,9 +37,8 @@ const HistoricoDis = () => {
       renderItem={disciplina => (
         <List.Item>
           <List.Item.Meta
-            //avatar={<Avatar icon={<UserOutlined />} />}
             title={`${disciplina.codigo} - ${disciplina.nome}`}
-            description={`Carga Horária: ${disciplina.cargaHoraria}`}
+            description={`Tipo: ${disciplina.tipo}, Carga Horária: ${disciplina.cargaHoraria}`}
           />
         </List.Item>
       )}
