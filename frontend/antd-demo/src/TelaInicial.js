@@ -43,7 +43,7 @@ const TelaInicial = () => {
   const [user, setUser] = useState(null);
 
   const [selectedDisHistorico, setSelectedDisHistorico] = useState();
-
+/*
   //API com o banco de dados
   useEffect(() => {
     (async () => {
@@ -74,9 +74,52 @@ const TelaInicial = () => {
       if (storedUser) {
         setUser(JSON.parse(storedUser));
       }
+      console.log(storedUser);
     })();
   }, []);
+  */
 
+  useEffect(() => {
+    (async () => {
+      try {
+        const response = await api.disciplinas.get();
+        const data = await response.json();
+  
+        // Cria um objeto com todas as disciplinas separando por tipo
+        const disciplinasPorTipo = data.reduce((acc, curr) => {
+          if (curr.tipo === 'Espc' || curr.tipo === 'Espm' || curr.tipo === 'Espcom' || curr.tipo === 'Ope' || curr.tipo === 'Ob' || curr.tipo === 'Comp') {
+            acc[curr.tipo].push(curr);
+          }
+          return acc;
+        }, {
+          Espc: [],
+          Espm: [],
+          Espcom: [],
+          Ope: [],
+          Ob: [],
+          Comp: [],
+        });
+  
+        setDisciplinas(disciplinasPorTipo);
+  
+        // Carregar as disciplinas selecionadas do localStorage
+        const storedSelectedDisciplinas = localStorage.getItem('selectedDisciplinas');
+        if (storedSelectedDisciplinas) {
+          setSelectedDisHistorico(JSON.parse(storedSelectedDisciplinas));
+        }
+        console.log("Disciplinas do Historico: ",storedSelectedDisciplinas);
+  
+      } catch (error) {
+        console.error("Erro ao buscar as disciplinas", error);
+      }
+  
+      const storedUser = localStorage.getItem('user');
+      if (storedUser) {
+        setUser(JSON.parse(storedUser));
+      }  
+    })();
+  }, []);
+  
 
   //Função que transforma as disciplinas em opções dentro dos Cascaders
   const transformarDisciplinasEmOpcoes = (disciplinas, tipo) => {
@@ -261,6 +304,28 @@ const TelaInicial = () => {
     }
   };
 
+  const getSelectedValues = (tipo) => {
+  
+    if (!selectedDisHistorico || !selectedDisHistorico[tipo]) {
+      // Retorna um array vazio se selectedDisHistorico ou selectedDisHistorico[tipo] estiver indefinido
+      return [];
+    }
+    const disciplinasTipo = selectedDisHistorico[tipo];
+    console.log(disciplinasTipo);
+    return disciplinasTipo.map((disciplina) => {
+      // supondo que 'disciplinas' é uma matriz de objetos de disciplina
+      // e cada objeto de disciplina tem um campo 'value' que é usado como valor no Cascader
+      const disciplinaObj = disciplinas[tipo].find((d) => d.id === disciplina.id);
+  
+      // retorna o caminho da disciplina selecionada
+      // se a disciplina estiver em uma hierarquia, isso deve ser uma matriz
+      // do caminho até a disciplina, e.g. ['pai', 'filho', 'neto']
+      return [disciplinaObj.value];
+    });
+  };
+  
+ console.log(user);
+
   return (
     <div style={{width: '100%', display: 'flex', flexDirection: 'column', gap: 10}}>
       <Card>
@@ -272,6 +337,7 @@ const TelaInicial = () => {
           options={transformarDisciplinasObrigatoriasEmOpcoes(disciplinas)}
           onChange={(value, selectedOptions) => onChange(value, selectedOptions, 'Ob')}
           placeholder="Selecione as Disciplinas Obrigatórias"
+          defaultValue={getSelectedValues('Ob')}
           multiple
         />
         <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}>

@@ -5,6 +5,7 @@ import LoginForm from './components/LoginForm';
 import SignupForm from './components/SignupForm';
 import TelaInicial from './TelaInicial';
 import HistoricoDis from './components/HistoricoDis'
+import Logout from './components/Logout';
 import UserContext from './UserContext';
 import api from './services/api';
 import { Route, Routes, BrowserRouter as Router} from 'react-router-dom';
@@ -49,7 +50,8 @@ function App() {
               <Route path="inicial" element={<TelaInicial onDisciplinaChange={handleDisciplinaChange} />} />
               <Route path="historico" element={<HistoricoDis />} />
               <Route path="sobrenos" element={<SobreNos />} />
-            </Route>
+              <Route path="logout" element={<Logout />} />
+            </Route> 
           </Routes>
         </UserContext.Provider>
       </Router>

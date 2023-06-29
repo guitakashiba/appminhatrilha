@@ -9,7 +9,6 @@ const HistoricoDis = () => {
 
   useEffect(() => {
     const fetchDisciplinas = async () => {
-      console.log("fetch foi chamado");
       
       // Recuperar os dados do usuário do localStorage
       const storedUser = JSON.parse(localStorage.getItem('user'));
@@ -19,7 +18,6 @@ const HistoricoDis = () => {
           const res = await api.disciplinas.getConcluidas(storedUser.id);
           const data = await res.json();
           setDisciplinas(data);
-          console.log("Disciplinas Salvas: ", data);
         } catch (err) {
           console.error(err);
         }

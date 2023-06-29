@@ -5,6 +5,14 @@ const bcrypt = require('bcrypt');
 const saltRounds = 10;
 
 
+const session = require('express-session');
+
+routes.use(session({
+  secret: 'seu segredo',
+  resave: false,
+  saveUninitialized: false
+}));
+
 routes.get('/usuarios', async (req, res) => {
     const usuarios = await connection('usuarios').select('*');
     return res.json(usuarios);
@@ -15,32 +23,6 @@ routes.delete('/usuarios', async (req, res) => {
     await connection('usuarios').where({ nome }).del();
     return res.json({ message: 'Usuário excluído com sucesso!' });
   });
-  /*
-routes.get('/login', async (req, res) => {
-    const { email, senha } = req.query;
-
-    const usuario = await connection('usuarios').select('*').where({ email, senha }).first();
-
-    if (usuario) {
-        return res.json({ success: true, usuario , message: 'Credenciais válidas'});
-    } else {
-        return res.status(401).json({ success: false, message: 'Credenciais inválidas' });
-    }
-});
-
-routes.post('/usuarios', async (req, res) => {
-    const {nome, matricula, email, curso, senha} = req.body;
-
-    await connection('usuarios').insert({
-        nome,
-        matricula,
-        email,
-        curso,
-        senha
-    });
-    return res.json('Usuario criado com sucesso!');
-});
-*/
 
 // compare a senha fornecida com a senha criptografada
 routes.post('/login', async (req, res) => {
@@ -55,7 +37,8 @@ routes.post('/login', async (req, res) => {
             return res.status(401).json({ success: false, message: 'Credenciais inválidas.' });
         }
 
-        // Se o login for bem-sucedido, retornar os detalhes do usuário.
+        // Se o login for bem-sucedido, salvar o usuário na sessão e retornar os detalhes do usuário.
+        req.session.usuario = usuario;
         return res.json({ success: true, usuario, message: 'Credenciais válidas.' });
     } catch (error) {
         console.error(error);
@@ -127,7 +110,7 @@ routes.put('/usuarios/:id', async (req, res) => {
 });
 
 // Rota de logout
-routes.get('/logout', (req, res) => {
+routes.post('/logout', (req, res) => {
     req.session.destroy(err => {
         if (err) {
             console.error(err);

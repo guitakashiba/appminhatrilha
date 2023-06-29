@@ -1,4 +1,5 @@
-import { Layout, Menu } from 'antd';
+import React, { useCallback } from 'react';
+import { Layout, Menu, notification } from 'antd';
 import {
   HomeOutlined,
   HistoryOutlined,
@@ -7,6 +8,7 @@ import {
 } from '@ant-design/icons';
 import { Outlet } from 'react-router-dom';
 import { useNavigate } from "react-router-dom";
+import api from '../services/api';
 
 const { Header, Sider, Content } = Layout;
 
@@ -44,10 +46,39 @@ const SidebarMenu = () => {
     navigate(path)
   }
 
+  const onLogout = useCallback(async () => {
+    try {
+      const response = await api.auth.logout();
+
+      if (response.success) {
+        console.log('Logout bem sucedido');
+        localStorage.removeItem('user');
+        redirectTo('/');
+      } else {
+        throw new Error(response.message || 'Falha ao fazer logout');
+      }
+    } catch (error) {
+      console.error('Erro ao fazer logout:', error);
+      notification.error({
+        message: 'Erro ao fazer logout. Por favor, tente novamente.',
+        duration: 3,
+      });
+    }
+  }, [navigate]);
+
+  const handleClick = ({ key: path }) => {
+    if (path === '/logout') {
+      onLogout();
+    } else {
+      redirectTo(path);
+    }
+  };
+
   return <Layout style={layoutStyle}>
     <Sider style={siderStyle}>
       <Menu
-        onClick={({ key: path }) => redirectTo(path)}
+        //onClick={({ key: path }) => redirectTo(path)}
+        onClick={handleClick}
         theme="dark" mode="inline"
         defaultSelectedKeys={['1']}
       >

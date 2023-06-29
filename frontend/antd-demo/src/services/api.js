@@ -29,8 +29,11 @@ export default {
     logout: async () => {
         try {
             const response = await fetch(`${BASE_URL}/logout`, {
-                method: 'GET',
-                credentials: 'same-origin'
+              method: 'POST',
+              headers: {
+                  'Content-Type': 'application/json'
+              },
+              credentials: 'same-origin'
             });
 
             if (!response.ok) {
