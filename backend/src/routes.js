@@ -91,18 +91,19 @@ routes.put('/usuarios/:id', async (req, res) => {
 
     try {
         // Primeiro, remove todas as disciplinas atuais do usuário
-        await connection('usuarioDisciplinas').where({ userId: id }).delete();
-
+        const disciplinasUsuario  = (await connection('usuarioDisciplinas').where({ userId: id }).select('*')).map(disc => disc.disciplinaId)
+        const disciplinasFiltradas = disciplinas.filter(disc => !disciplinasUsuario.includes(disc.disciplinaId))
         // Em seguida, insere as novas disciplinas
-        const usuarioDisciplinas = disciplinas.map(({ usuarioId, disciplinaId }) => {
+        const usuarioDisciplinas = disciplinasFiltradas.map(({ usuarioId, disciplinaId }) => {
             return {
                 userId: usuarioId,
                 disciplinaId
             };
         });
 
-        await connection('usuarioDisciplinas').insert(usuarioDisciplinas);
-
+        if(usuarioDisciplinas.length){
+            await connection('usuarioDisciplinas').insert(usuarioDisciplinas);
+        }
         return res.json({ message: 'Disciplinas atualizadas com sucesso!' });
     } catch (error) {
         return res.status(500).json({ message: 'Erro ao atualizar disciplinas' });
