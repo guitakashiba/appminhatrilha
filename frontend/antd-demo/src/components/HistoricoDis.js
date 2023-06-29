@@ -3,35 +3,15 @@ import React, { useState, useEffect } from 'react';
 import { List } from 'antd';
 import UserContext from '../UserContext';
 import api from '../services/api';
+import { useHistoricoDisciplina } from '../hooks/useHistoricoDisciplina';
 
 const HistoricoDis = () => {
-  const [disciplinas, setDisciplinas] = useState([]);
-
-  useEffect(() => {
-    const fetchDisciplinas = async () => {
-      
-      // Recuperar os dados do usuário do localStorage
-      const storedUser = JSON.parse(localStorage.getItem('user'));
-        
-      if (storedUser && storedUser.id) { 
-        try {
-          const res = await api.disciplinas.getConcluidas(storedUser.id);
-          const data = await res.json();
-          setDisciplinas(data);
-        } catch (err) {
-          console.error(err);
-        }
-      }
-    };
-      
-    fetchDisciplinas().catch(err => console.error(err));
-  }, []);
-  
+  const [historicoDisciplinas] = useHistoricoDisciplina()
 
   return (
     <List
       itemLayout="horizontal"
-      dataSource={disciplinas}
+      dataSource={historicoDisciplinas}
       renderItem={disciplina => (
         <List.Item>
           <List.Item.Meta
