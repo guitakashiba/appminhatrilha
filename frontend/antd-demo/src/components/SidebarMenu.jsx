@@ -1,5 +1,4 @@
-import React, { useCallback } from 'react';
-import { Layout, Menu, notification } from 'antd';
+import { Breadcrumb, Layout, Menu, theme, notification } from 'antd';
 import {
   HomeOutlined,
   HistoryOutlined,
@@ -7,52 +6,31 @@ import {
   LogoutOutlined,
 } from '@ant-design/icons';
 import { Outlet } from 'react-router-dom';
-import { useNavigate } from "react-router-dom";
+import { useNavigate } from 'react-router-dom';
 import api from '../services/api';
 
-const { Header, Sider, Content } = Layout;
+const { Header, Content, Footer } = Layout;
 
-const headerStyle = {
-  color: '#fff',
-  height: 64,
-  paddingInline: 50,
-  lineHeight: '64px',
-  backgroundColor: '#142d4c',
-  textAlign: 'center',
-};
-
-const contentStyle = {
-  padding: '16px',
-  maxHeight: '100vh',
-  overflow: 'auto'
-};
-
-const siderStyle = {
-  width: 256,
-  minHeight: '100vh',
-  backgroundColor: '#142d4c',
-};
-
-const layoutStyle = {
-  width: '100%',
-  maxHeight: '100vh'
-};
-
-const SidebarMenu = () => {
-
-  const navigate = useNavigate()
+const App = () => {
+  const navigate = useNavigate();
 
   const redirectTo = (path) => {
-    navigate(path)
-  }
+    navigate(path);
+  };
 
-  const onLogout = useCallback(async () => {
+  const onLogout = async () => {
     try {
       const response = await api.auth.logout();
 
       if (response.success) {
         console.log('Logout bem sucedido');
+
+        // Remova os itens do localStorage
         localStorage.removeItem('user');
+        localStorage.removeItem('disciplinas');
+        localStorage.removeItem('cargaHorariaTotal');
+        localStorage.removeItem('selectedDisciplinas');
+
         redirectTo('/');
       } else {
         throw new Error(response.message || 'Falha ao fazer logout');
@@ -64,7 +42,7 @@ const SidebarMenu = () => {
         duration: 3,
       });
     }
-  }, [navigate]);
+  };
 
   const handleClick = ({ key: path }) => {
     if (path === '/logout') {
@@ -74,35 +52,76 @@ const SidebarMenu = () => {
     }
   };
 
-  return <Layout style={layoutStyle}>
-    <Sider style={siderStyle}>
-      <Menu
-        //onClick={({ key: path }) => redirectTo(path)}
-        onClick={handleClick}
-        theme="dark" mode="inline"
-        defaultSelectedKeys={['1']}
+  const {
+    token: { colorBgContainer },
+  } = theme.useToken();
+
+  return (
+    <Layout style={{ width:'100%', height:'100%'}}>
+      <Header
+        style={{
+          position: 'sticky',
+          top: 0,
+          zIndex: 1,
+          width: '100%',
+          display: 'flex',
+          alignItems: 'center',
+        }}
       >
-        <Menu.Item key="/inicial" icon={<HomeOutlined />}>
-          Home
-        </Menu.Item>
-        <Menu.Item key="/historico" icon={<HistoryOutlined />}>
-          Histórico
-        </Menu.Item>
-        <Menu.Item key="/sobrenos" icon={<TeamOutlined />}>
-          Sobre nós
-        </Menu.Item>
-        <Menu.Item key="/logout" icon={<LogoutOutlined />}>
-          Logout
-        </Menu.Item>
-      </Menu>
-    </Sider>
-    <Layout>
-      <Header style={headerStyle}>Minha Trilha App</Header>
-      <Content style={contentStyle}>
-        <Outlet />
+        <div className="demo-logo" />
+        <Menu
+          theme="dark"
+          mode="horizontal"
+          defaultSelectedKeys={['2']}
+          onClick={handleClick}
+        >
+          <Menu.Item key="/inicial" icon={<HomeOutlined />}>
+            Home
+          </Menu.Item>
+          <Menu.Item key="/historico" icon={<HistoryOutlined />}>
+            Histórico
+          </Menu.Item>
+          <Menu.Item key="/sobrenos" icon={<TeamOutlined />}>
+            Sobre nós
+          </Menu.Item>
+          <Menu.Item key="/logout" icon={<LogoutOutlined />}>
+            Logout
+          </Menu.Item>
+        </Menu>
+      </Header>
+      <Content
+        className="site-layout"
+        style={{
+          padding: '0 50px',
+          flex: '1 0 auto',
+        }}
+      >
+        <Breadcrumb
+          style={{
+            margin: '16px 0',
+          }}
+        >
+          
+        </Breadcrumb>
+        <div
+          style={{
+            padding: 24,
+            minHeight: 380,
+            background: colorBgContainer,
+          }}
+        >
+          <Outlet />
+        </div>
       </Content>
+      <Footer
+        style={{
+          textAlign: 'center',
+        }}
+      >
+        Minha Trilha App ©2023
+      </Footer>
     </Layout>
-  </Layout>
+  );
 };
 
-export default SidebarMenu;
+export default App;

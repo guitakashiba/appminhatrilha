@@ -1,6 +1,6 @@
 .container {
     display: flex !important;
-    justify-content: center;
-    align-content: center;
+    justify-content: center !important;
+    align-content: center !important;
   }
   

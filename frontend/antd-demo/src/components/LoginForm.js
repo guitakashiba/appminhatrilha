@@ -18,6 +18,11 @@ const LoginForm = ({ onLogin }) => {
         onLogin(data);
         navigate('/inicial');
         localStorage.setItem('user', JSON.stringify(data));
+        
+        notification.success({
+          message: 'Login realizado com sucesso!',
+          duration: 3,
+        });
 
       } else {
         throw new Error(response.message || 'Erro desconhecido');
@@ -30,6 +35,7 @@ const LoginForm = ({ onLogin }) => {
       });
     }
   }, [onLogin, navigate]);
+  
 
   return (
     <div className="login-container">

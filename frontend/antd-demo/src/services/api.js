@@ -6,46 +6,46 @@ export default {
   auth: {
     login: async (email, password) => {
       try {
-          const response = await fetch(`${BASE_URL}/login`, {
-              method: 'POST',
-              headers: {
-                  'Content-Type': 'application/json'
-              },
-              body: JSON.stringify({ email, senha: password })
-          });
-  
-          const data = await response.json();
-  
-          if (response.ok) {
-              return data;
-          } else {
-              throw new Error(data.message || 'Erro desconhecido');
-          }
+        const response = await fetch(`${BASE_URL}/login`, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify({ email, senha: password })
+        });
+
+        const data = await response.json();
+
+        if (response.ok) {
+          return data;
+        } else {
+          throw new Error(data.message || 'Erro desconhecido');
+        }
       } catch (error) {
-          console.error(error);
-          throw error;
+        console.error(error);
+        throw error;
       }
     },
     logout: async () => {
-        try {
-            const response = await fetch(`${BASE_URL}/logout`, {
-              method: 'POST',
-              headers: {
-                  'Content-Type': 'application/json'
-              },
-              credentials: 'same-origin'
-            });
+      try {
+        const response = await fetch(`${BASE_URL}/logout`, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json'
+          },
+          credentials: 'same-origin'
+        });
 
-            if (!response.ok) {
-                throw new Error('Falha ao fazer logout');
-            }
-
-            const data = await response.json();
-            return data;
-        } catch (error) {
-            console.error(error);
-            throw error;
+        if (!response.ok) {
+          throw new Error('Falha ao fazer logout');
         }
+
+        const data = await response.json();
+        return data;
+      } catch (error) {
+        console.error(error);
+        throw error;
+      }
     }
   },
 
@@ -69,10 +69,10 @@ export default {
         body: JSON.stringify(values),
       });
     },
-},
+  },
 
   disciplinas: {
-    get: () => { 
+    get: () => {
       return fetch(`${BASE_URL}/disciplinas`)
     },
     getConcluidas: (userId) => {
@@ -80,5 +80,5 @@ export default {
     }
   }
 
-  
+
 }
