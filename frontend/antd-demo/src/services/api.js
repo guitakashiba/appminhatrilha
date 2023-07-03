@@ -1,6 +1,6 @@
 
 //const BASE_URL = 'http://localhost:3333'
-const BASE_URL = 'http://100.26.195.165:3333'
+const BASE_URL = 'http://23.22.218.97:3333'
 
 export default {
   auth: {
