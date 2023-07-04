@@ -74,6 +74,7 @@ const App = () => {
           mode="horizontal"
           defaultSelectedKeys={['2']}
           onClick={handleClick}
+          style={{width:'100%'}}
         >
           <Menu.Item key="/inicial" icon={<HomeOutlined />}>
             Home

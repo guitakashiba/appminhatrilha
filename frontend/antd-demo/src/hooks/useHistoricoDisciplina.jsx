@@ -26,22 +26,29 @@ export function useHistoricoDisciplina(){
       }, []);
       console.log("historico: ", historicoDisciplinas);
   
-    function processaHistoricoDisciplinas(){
-        const disciplinasSalvas = {        
-            Espc: [],
-            Espm: [],
-            Espcom: [],
-            Ope: [],
-            Ob: [],
-            Comp: []
-        }
-        
-        historicoDisciplinas.map(({tipo, id}) => {
-            disciplinasSalvas[tipo].push(id)
-        })
+      const typeToTitle = {
+        Ob: 'Obrigatórias',
+        Espc: 'Especializadas de Controle',
+        Espm: 'Especializadas de Mecatronica',
+        Espcom: 'Especializadas de Computação',
+        Ope: 'Optativas de Engenharia',
+        Comp: 'Complementares'
+      };
+    
+      function processaHistoricoDisciplinas() {
+        const disciplinasSalvas = Object.keys(typeToTitle).reduce((result, tipo) => {
+          result[tipo] = [];
+          return result;
+        }, {});
+    
+        historicoDisciplinas.forEach((disciplina) => {
+          if (disciplinasSalvas[disciplina.tipo]) {
+            disciplinasSalvas[disciplina.tipo].push(disciplina);
+          }
+        });
+    
+        return disciplinasSalvas;
+      }
 
-        return disciplinasSalvas
-    }
-
-    return [historicoDisciplinas, processaHistoricoDisciplinas]
+    return [historicoDisciplinas, processaHistoricoDisciplinas, typeToTitle];
 }

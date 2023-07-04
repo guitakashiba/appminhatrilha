@@ -1,26 +1,38 @@
 //HistoricoDis.js
-import React, { useState, useEffect } from 'react';
-import { List } from 'antd';
-import UserContext from '../UserContext';
-import api from '../services/api';
+import React from 'react';
+import { List, Typography } from 'antd';
 import { useHistoricoDisciplina } from '../hooks/useHistoricoDisciplina';
 
+const { Title } = Typography;
+
 const HistoricoDis = () => {
-  const [historicoDisciplinas] = useHistoricoDisciplina()
+  const [, processaHistoricoDisciplinas, typeToTitle] = useHistoricoDisciplina();
+  const disciplinasSalvas = processaHistoricoDisciplinas();
 
   return (
-    <List
-      itemLayout="horizontal"
-      dataSource={historicoDisciplinas}
-      renderItem={disciplina => (
-        <List.Item>
-          <List.Item.Meta
-            title={`${disciplina.codigo} - ${disciplina.nome}`}
-            description={`Tipo: ${disciplina.tipo}, Carga Horária: ${disciplina.cargaHoraria}`}
-          />
-        </List.Item>
-      )}
-    />
+    <>
+      {Object.keys(disciplinasSalvas).map((tipo) => {
+        if (disciplinasSalvas[tipo].length === 0) return null;
+
+        return (
+          <div key={tipo}>
+            <Title level={4}>{typeToTitle[tipo]}</Title>
+            <List
+              itemLayout="horizontal"
+              dataSource={disciplinasSalvas[tipo]}
+              renderItem={disciplina => (
+                <List.Item>
+                  <List.Item.Meta
+                    title={`${disciplina.codigo} - ${disciplina.nome}`}
+                    description={`Carga Horária: ${disciplina.cargaHoraria}`}
+                  />
+                </List.Item>
+              )}
+            />
+          </div>
+        );
+      })}
+    </>
   );
 };
 
