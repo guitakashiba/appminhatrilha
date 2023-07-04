@@ -119,17 +119,23 @@ const TelaInicial = () => {
     let selectedDiscs = [];
   
     // Lógica para quando as disciplinas são selecionadas, sendo um pai ou children
-    selectedOptions.forEach(opt => {
-      if (opt[0].children && opt.length !== 2) {
-        opt[0].children.forEach(child => {
-          const disc = disciplinas[tipo].find(d => d.id === child.value);
-          if (disc) selectedDiscs.push(disc);
-        });
-      } else {
-        const disc = disciplinas[tipo].find(d => d.id === (opt[1] || opt[0]).value);
+  selectedOptions.forEach(opt => {
+    if (opt[0].children && opt.length !== 2) {
+      opt[0].children.forEach(child => {
+        const disc = disciplinas[tipo].find(d => d.id === child.value);
         if (disc) selectedDiscs.push(disc);
-      }
-    });
+      });
+    } else {
+      const disc = disciplinas[tipo].find(d => d.id === (opt[1] || opt[0]).value);
+      if (disc) selectedDiscs.push(disc);
+    }
+  });
+
+  // Aqui nós atualizamos o estado com as disciplinas selecionadas
+  setSelectedDisciplinas(prev => ({ 
+    ...prev, 
+    [tipo]: selectedDiscs 
+  }));
 
     const currentDisciplinas = selectedDisciplinas
     setCargaHorariaTotal(prevState => {
@@ -212,11 +218,7 @@ const TelaInicial = () => {
       setMessageShown((prev) => ({ ...prev, [tipo]: true }));
     }
 //******************[FIM] Cálculo das cargas Horárias de cada tipo seguindo as exigências do Curriculo [FIM]
-    //setSelectedDisciplinas({ ...selectedDisciplinas, [tipo]: selectedDiscs });
-    
-
   };
-
   
   //Cálculo das cargas Horárias total de cada tipo
   const calcCargaHorariaTotal = {
@@ -251,12 +253,14 @@ const TelaInicial = () => {
         }));
 
         const response = await api.user.update(user.id, { disciplinas: disciplinasToUpdate });
-
+        
         if (!response.ok) {
             throw new Error('Erro ao salvar disciplinas');
         }
 
         localStorage.setItem('selectedDisciplinas', JSON.stringify(selectedDisciplinas));
+        console.log("Disciplinas para Update: ", disciplinasToUpdate);
+        console.log("Disciplinas selecionadas: ", selectedDisciplinas);
 
         notification.success({
             message: 'Disciplinas salvas com sucesso!',
@@ -274,9 +278,6 @@ const TelaInicial = () => {
 
   return (
     <div style={{width: '100%', display: 'flex', flexDirection: 'column', gap: 10}}>
-      <Card>
-        <h2>Bem-vindo, {user?.nome}</h2>
-      </Card>
       <Card title="Disciplinas Obrigatórias">
         <Cascader
           style={{ width: '100%', marginBottom: '1rem' }}

@@ -42,7 +42,14 @@ const TelaInicial = () => {
 
   const [user, setUser] = useState(null);
 
-  const [selectedDisHistorico, setSelectedDisHistorico] = useState();
+  const [selectedDisHistorico, setSelectedDisHistorico] = useState({
+    Espc: [],
+    Espm: [],
+    Espcom: [],
+    Ope: [],
+    Ob: [],
+    Comp: [],
+  });
 
   useEffect(() => {
     (async () => {
@@ -72,7 +79,6 @@ const TelaInicial = () => {
         if (storedSelectedDisciplinas) {
           setSelectedDisHistorico(JSON.parse(storedSelectedDisciplinas));
         }
-        console.log("Disciplinas do Historico: ",storedSelectedDisciplinas);
   
       } catch (error) {
         console.error("Erro ao buscar as disciplinas", error);
@@ -131,14 +137,16 @@ const TelaInicial = () => {
   
       // Remove a carga horária total de disciplinas desmarcadas
       currentDisciplinas[tipo].forEach(disc => {
-        if (disc && !selectedDiscs.find(d => d.id === disc.id)) {
+        if (disc && disc.id && !selectedDiscs.find(d => d && d.id === disc.id)) {
+
           updatedCargaHorariaTotal[tipo] -= Number(disc.cargaHoraria);
         }
       });
 
       // Adicione a carga horária total de disciplinas selecionadas
       selectedDiscs.forEach(disc => {
-        if (disc && !currentDisciplinas[tipo].find(d => d.id === disc.id)) {
+        if (disc && disc.id && !currentDisciplinas[tipo].find(d => d && d.id === disc.id)) {
+
           updatedCargaHorariaTotal[tipo] += Number(disc.cargaHoraria);
         }
       });
@@ -168,7 +176,6 @@ const TelaInicial = () => {
         setMessageShown((prev) => ({ ...prev, [tipo]: true }));
       };
     };
-    console.log("Carga horaria: ",novaCargaHorariaTotal);
 
     if (cargaHorariaTotal['Espc'] + cargaHorariaTotal['Espm'] + cargaHorariaTotal['Espcom'] >= 540 && messageShown) {
       message.success({
@@ -179,7 +186,6 @@ const TelaInicial = () => {
         onClose: () =>
           setMessageShown((prev) => ({ ...prev, 'Espc': false, 'Espm': false, 'Espcom': false })),
       });
-      console.log("saiu da msg", [tipo]);
 
       setMessageShown((prev) => ({ ...prev, 'Espc': true, 'Espm': true, 'Espcom': true }));
     }
@@ -192,7 +198,6 @@ const TelaInicial = () => {
         onClose: () =>
           setMessageShown((prev) => ({ ...prev, [tipo]: false })),
       });
-      console.log("Dentro de OPE: ", [tipo]);
       setMessageShown((prev) => ({ ...prev, [tipo]: true }));
     }
 
@@ -207,16 +212,11 @@ const TelaInicial = () => {
       setMessageShown((prev) => ({ ...prev, [tipo]: true }));
     }
 //******************[FIM] Cálculo das cargas Horárias de cada tipo seguindo as exigências do Curriculo [FIM]
+    //setSelectedDisciplinas({ ...selectedDisciplinas, [tipo]: selectedDiscs });
     
-  
-    setSelectedDisciplinas({ ...selectedDisciplinas, [tipo]: selectedDiscs });
-
-    const storedSelectedDisciplinas = JSON.parse(localStorage.getItem('selectedDisciplinas'));
-
-    console.log("Disciplinas Selecionadas Salvas: ", storedSelectedDisciplinas);
-
 
   };
+
   
   //Cálculo das cargas Horárias total de cada tipo
   const calcCargaHorariaTotal = {
@@ -247,6 +247,7 @@ const TelaInicial = () => {
         const disciplinasToUpdate = [].concat(...Object.values(selectedDisciplinas)).map(disciplina => ({
           usuarioId: user.id,
           disciplinaId: disciplina.id,
+          tipo: disciplina.tipo
         }));
 
         const response = await api.user.update(user.id, { disciplinas: disciplinasToUpdate });
@@ -254,6 +255,8 @@ const TelaInicial = () => {
         if (!response.ok) {
             throw new Error('Erro ao salvar disciplinas');
         }
+
+        localStorage.setItem('selectedDisciplinas', JSON.stringify(selectedDisciplinas));
 
         notification.success({
             message: 'Disciplinas salvas com sucesso!',
@@ -269,28 +272,6 @@ const TelaInicial = () => {
     }
   };
 
-  const getSelectedValues = (tipo) => {
-  
-    if (!selectedDisHistorico || !selectedDisHistorico[tipo]) {
-      // Retorna um array vazio se selectedDisHistorico ou selectedDisHistorico[tipo] estiver indefinido
-      return [];
-    }
-    const disciplinasTipo = selectedDisHistorico[tipo];
-    console.log(disciplinasTipo);
-    return disciplinasTipo.map((disciplina) => {
-      // supondo que 'disciplinas' é uma matriz de objetos de disciplina
-      // e cada objeto de disciplina tem um campo 'value' que é usado como valor no Cascader
-      const disciplinaObj = disciplinas[tipo].find((d) => d.id === disciplina.id);
-  
-      // retorna o caminho da disciplina selecionada
-      // se a disciplina estiver em uma hierarquia, isso deve ser uma matriz
-      // do caminho até a disciplina, e.g. ['pai', 'filho', 'neto']
-      return [disciplinaObj.value];
-    });
-  };
-  
- console.log(user);
-
   return (
     <div style={{width: '100%', display: 'flex', flexDirection: 'column', gap: 10}}>
       <Card>
@@ -302,7 +283,6 @@ const TelaInicial = () => {
           options={transformarDisciplinasObrigatoriasEmOpcoes(disciplinas)}
           onChange={(value, selectedOptions) => onChange(value, selectedOptions, 'Ob')}
           placeholder="Selecione as Disciplinas Obrigatórias"
-          defaultValue={getSelectedValues('Ob')}
           multiple
         />
         <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}>

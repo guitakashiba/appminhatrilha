@@ -24,7 +24,6 @@ export function useHistoricoDisciplina(){
           
         fetchDisciplinas().catch(err => console.error(err));
       }, []);
-      console.log("historico: ", historicoDisciplinas);
   
       const typeToTitle = {
         Ob: 'Obrigatórias',

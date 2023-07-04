@@ -76,8 +76,11 @@ const App = () => {
           onClick={handleClick}
           style={{width:'100%'}}
         >
-          <Menu.Item key="/inicial" icon={<HomeOutlined />}>
-            Home
+          <Menu.Item key="/dashboard" icon={<TeamOutlined />}>
+            Dashboard
+          </Menu.Item>
+          <Menu.Item key="/disciplinas" icon={<HomeOutlined />}>
+            Disciplinas
           </Menu.Item>
           <Menu.Item key="/historico" icon={<HistoryOutlined />}>
             Histórico

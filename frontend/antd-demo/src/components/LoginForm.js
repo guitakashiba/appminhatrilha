@@ -4,6 +4,7 @@ import { Button, Form, Input, notification } from 'antd';
 import api from '../services/api';
 import { useNavigate } from 'react-router-dom';
 import { Link } from 'react-router-dom';
+import novaLogo from '../capa(2).png';
 
 const LoginForm = ({ onLogin }) => {
   const navigate = useNavigate();
@@ -16,7 +17,7 @@ const LoginForm = ({ onLogin }) => {
         const data = response.usuario;
         console.log(data);
         onLogin(data);
-        navigate('/inicial');
+        navigate('/dashboard');
         localStorage.setItem('user', JSON.stringify(data));
         
         notification.success({
@@ -38,42 +39,57 @@ const LoginForm = ({ onLogin }) => {
   
 
   return (
-    <div className="login-container">
-      <h2>Login</h2>
-      <Form
-        name="login-form"
-        initialValues={{ remember: true }}
-        onFinish={onFinish}
-      >
-        <Form.Item
-          name="email"
-          rules={[{ required: true, message: 'Insira o seu email!' }]}
+    <div className="login-container" 
+          style={{  width:'80%', 
+                    display: 'flex', 
+                    flexDirection: 'column', 
+                    alignItems: 'center' }}>
+      <div>
+        <img  
+            src={novaLogo} 
+            alt="Logo" 
+            style={{width: '450px', 
+                    height:'300px'
+                  }} 
+        />
+      </div>
+      <div>
+        <h2>Login</h2>
+        <Form
+          name="login-form"
+          initialValues={{ remember: true }}
+          onFinish={onFinish}
         >
-          <Input placeholder="Email" />
-        </Form.Item>
+          <Form.Item
+            name="email"
+            rules={[{ required: true, message: 'Insira o seu email!' }]}
+          >
+            <Input placeholder="Email" />
+          </Form.Item>
 
-        <Form.Item
-          name="password"
-          rules={[{ required: true, message: 'Insira a sua senha!' }]}
-        >
-          <Input.Password placeholder="Senha" />
-        </Form.Item>
+          <Form.Item
+            name="password"
+            rules={[{ required: true, message: 'Insira a sua senha!' }]}
+          >
+            <Input.Password placeholder="Senha" />
+          </Form.Item>
 
-        <Form.Item>
-          <Button type="primary" htmlType="submit">
-            Login
-          </Button>
-          
-        </Form.Item>
-        <Form.Item>
-          <h2>Ainda não possui conta? Faça o seu cadastro já!</h2>
-          <Link to="/signup">
+          <Form.Item>
             <Button type="primary" htmlType="submit">
-                Cadastrar
+              Login
             </Button>
-          </Link>
-        </Form.Item>
-      </Form>
+            
+          </Form.Item>
+          <Form.Item>
+            <h2>Ainda não possui conta? Faça o seu cadastro já!</h2>
+            <Link to="/signup">
+              <Button type="primary" htmlType="submit">
+                  Cadastrar
+              </Button>
+            </Link>
+          </Form.Item>
+        </Form>
+      </div>
     </div>
   );
 };

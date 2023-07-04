@@ -24,7 +24,7 @@ const SignupForm = () => {
       });
 
       
-      navigate('/inicial');
+      navigate('/dashboard');
 
     } catch (error) {
       console.error('Erro ao enviar o formulário de inscrição:', error);

@@ -11,6 +11,7 @@ import api from './services/api';
 import { Route, Routes, BrowserRouter as Router} from 'react-router-dom';
 import SidebarMenu from './components/SidebarMenu';
 import SobreNos from './components/SobreNos';
+import Dashboard from './Dashboard';
 
 function App() {
   const [user, setUser] = useState(null); // Crie um estado para o usuário
@@ -47,9 +48,10 @@ function App() {
             <Route path="/" element={<LoginForm onLogin={handleLogin} />} />
             <Route path="/signup" element={<SignupForm />} />
             <Route path="/" element={<SidebarMenu />}>
-              <Route path="inicial" element={<TelaInicial onDisciplinaChange={handleDisciplinaChange} />} />
+              <Route path="disciplinas" element={<TelaInicial onDisciplinaChange={handleDisciplinaChange} />} />
               <Route path="historico" element={<HistoricoDis />} />
               <Route path="sobrenos" element={<SobreNos />} />
+              <Route path="dashboard" element={<Dashboard />} />
               <Route path="logout" element={<Logout />} />
             </Route> 
           </Routes>
