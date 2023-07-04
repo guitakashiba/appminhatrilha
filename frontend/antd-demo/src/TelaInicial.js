@@ -248,8 +248,7 @@ const TelaInicial = () => {
 
         const disciplinasToUpdate = [].concat(...Object.values(selectedDisciplinas)).map(disciplina => ({
           usuarioId: user.id,
-          disciplinaId: disciplina.id,
-          tipo: disciplina.tipo
+          disciplinaId: disciplina.id
         }));
 
         const response = await api.user.update(user.id, { disciplinas: disciplinasToUpdate });

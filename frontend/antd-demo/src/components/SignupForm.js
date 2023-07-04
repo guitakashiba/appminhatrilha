@@ -11,25 +11,23 @@ const SignupForm = () => {
   const onFinishSignup = useCallback(async (values) => {
     try {
       const response = await api.user.create(values);
-
-      if (!response.ok) {
-        throw new Error('Erro na criação do usuário');
-      }
-
       const data = await response.json();
-      console.log(data);
-      notification.success({
-        message: 'Usuário criado com sucesso!',
-        duration: 3,
-      });
 
-      
-      navigate('/dashboard');
-
+      if (data.success) {
+        localStorage.setItem('user', JSON.stringify(data));
+        console.log("Usuario no cadastro: ", data);
+        navigate('/');
+        notification.success({
+          message: 'Cadastro realizado com sucesso!',
+          duration: 3,
+        });
+      } else {
+        throw new Error(data.message || 'Erro desconhecido');
+      }
     } catch (error) {
-      console.error('Erro ao enviar o formulário de inscrição:', error);
+      console.error('Erro ao fazer o cadastro:', error);
       notification.error({
-        message: 'Erro ao criar usuário. Por favor, tente novamente.',
+        message: 'Erro ao fazer o cadastro. Por favor, tente novamente.',
         duration: 3,
       });
     }

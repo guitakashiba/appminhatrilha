@@ -69,6 +69,11 @@ routes.post('/usuarios', async (req, res) => {
             senha: hashedPassword
         });
 
+        const newUser = await connection('usuarios').select('*').where({ email }).first();
+
+        // Salvar o novo usuário na sessão
+        req.session.usuario = newUser;
+
         return res.json({ success: true, message: 'Usuário registrado com sucesso.' });
     } catch (error) {
         console.error(error);

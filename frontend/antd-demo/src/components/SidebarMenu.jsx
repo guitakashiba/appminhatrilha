@@ -6,13 +6,14 @@ import {
   LogoutOutlined,
 } from '@ant-design/icons';
 import { Outlet } from 'react-router-dom';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useLocation } from 'react-router-dom';
 import api from '../services/api';
 
 const { Header, Content, Footer } = Layout;
 
 const App = () => {
   const navigate = useNavigate();
+  const location = useLocation();
 
   const redirectTo = (path) => {
     navigate(path);
@@ -72,7 +73,7 @@ const App = () => {
         <Menu
           theme="dark"
           mode="horizontal"
-          defaultSelectedKeys={['2']}
+          selectedKeys={[location.pathname]}
           onClick={handleClick}
           style={{width:'100%'}}
         >

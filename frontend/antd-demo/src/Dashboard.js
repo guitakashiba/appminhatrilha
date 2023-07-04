@@ -14,8 +14,8 @@ const Dashboard = () => {
     Espcom: 252,
     Ope: 144,
     Comp: 54, 
-};
-    const [user, setUser] = useState(JSON.parse(localStorage.getItem('user')));
+  };
+  const [user, setUser] = useState(null); 
 
   useEffect(() => {
     const fetchAllDisciplinas = async () => {
@@ -26,15 +26,19 @@ const Dashboard = () => {
 
     const fetchHistoricoDisciplinas = async () => {
       const storedUser = JSON.parse(localStorage.getItem('user'));
+      console.log("Stored USer: ",storedUser);
       if (storedUser && storedUser.id) {
         const res = await api.disciplinas.getConcluidas(storedUser.id);
         const data = await res.json();
         setHistoricoDisciplinas(data);
+        
+        setUser(storedUser);
       }
     };
 
     fetchAllDisciplinas().then(fetchHistoricoDisciplinas).then(() => setIsLoading(false));
   }, []);
+  console.log("Usuario cadastrado dashboard: ", user);
 
   if (isLoading) {
     return <p>Loading...</p>;

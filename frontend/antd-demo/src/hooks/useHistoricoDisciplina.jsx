@@ -26,12 +26,12 @@ export function useHistoricoDisciplina(){
       }, []);
   
       const typeToTitle = {
-        Ob: 'Obrigatórias',
+        Ob: 'Disciplinas Obrigatórias',
         Espc: 'Especializadas de Controle',
         Espm: 'Especializadas de Mecatronica',
         Espcom: 'Especializadas de Computação',
         Ope: 'Optativas de Engenharia',
-        Comp: 'Complementares'
+        Comp: 'Disciplinas Complementares'
       };
     
       function processaHistoricoDisciplinas() {
