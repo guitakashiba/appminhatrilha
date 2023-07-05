@@ -13,6 +13,8 @@ import SidebarMenu from './components/SidebarMenu';
 import SobreNos from './components/SobreNos';
 import Dashboard from './Dashboard';
 
+
+
 function App() {
   const [user, setUser] = useState(null); // Crie um estado para o usuário
 
