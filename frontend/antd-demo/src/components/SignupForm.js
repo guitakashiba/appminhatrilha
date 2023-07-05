@@ -33,8 +33,10 @@ const SignupForm = () => {
     }
   }, [navigate]);
 
+
   return (
     <div className="signup-container">
+      <h1>Minha Trilha App</h1>
       <h2>Cadastro</h2>
       <Form
         name="signup-form"
@@ -102,6 +104,9 @@ const SignupForm = () => {
         <Form.Item>
             <Button type="primary" htmlType="submit">
             Cadastrar
+            </Button>
+            <Button type="primary" onClick={() => navigate('/')} style={{marginLeft:'5px'}}>
+              Voltar
             </Button>
         </Form.Item>
 
