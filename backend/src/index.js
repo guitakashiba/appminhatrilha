@@ -25,14 +25,15 @@ const io = new Server(server , {
 
 
 const _dirname = path.dirname("")
-const buildPath = path.join(__dirname, '..', '..', 'frontend', 'antd-demo', 'build');
+const buildPath = path.resolve(__dirname, '..', '..', '..', 'frontend', 'antd-demo', 'build');
+
 
 app.use(express.static(buildPath))
 
 app.get("/*", function(req, res){
 
     res.sendFile(
-        path.join(__dirname, "../../frontend/antd-demo/build/index.html"),
+        path.join(__dirname, "../../../frontend/antd-demo/build/index.html"),
         function (err) {
           if (err) {
             res.status(500).send(err);
