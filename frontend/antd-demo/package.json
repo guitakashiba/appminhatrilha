@@ -13,7 +13,6 @@
     "react-countup": "^6.4.2",
     "react-dom": "^18.2.0",
     "react-router-dom": "^6.11.1",
-    "react-scripts": "5.0.1",
     "recharts": "^2.7.2",
     "url": "^0.11.1",
     "web-vitals": "^2.1.4"
@@ -41,5 +40,10 @@
       "last 1 firefox version",
       "last 1 safari version"
     ]
+  },
+  "devDependencies": {
+    "@babel/node": "^7.23.9",
+    "@babel/preset-react": "^7.23.3",
+    "react-scripts": "^5.0.1"
   }
 }

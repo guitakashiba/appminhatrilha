@@ -3,7 +3,7 @@ import React, { useState, useEffect } from 'react';
 import './App.css';
 import LoginForm from './components/LoginForm';
 import SignupForm from './components/SignupForm';
-import TelaInicial from './TelaInicial';
+import TelaInicial from './TelaInicial.js';
 import HistoricoDis from './components/HistoricoDis'
 import Logout from './components/Logout';
 import UserContext from './UserContext';
