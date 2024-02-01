@@ -1,10 +1,10 @@
-# Sobre o projeto
+# About the Project
 
-Minha Trilha Academica é uma aplicação full stack web construída durante o 8º semestre do curso de graduação em Engenharia de Controle e Automação na Universidade Federal de Santa Catarina, liderado por mim Guilherme Takashiba, contríbuição dos academico Leonardo da Rosa, Matheus Neves e com apoio externo do Eng. Guilherme Renkel.
+Minha Trilha Academica (My Academic Path) is a full-stack web application developed during the 8th semester of the undergraduate program in Control and Automation Engineering at the Federal University of Santa Catarina. The project was led by me, Guilherme Takashiba, with contributions from the academic students Leonardo da Rosa and Matheus Neves, and external support from Engineer Guilherme Renkel.
 
-A aplicação é voltada ao uso interno por parte dos graduandos, sendo uma ferramenta de gestão de disciplinas e proporcionando um mais apurado controle curricular com base em graficos e indicações númericas do progresso academico de cada aluno.
+The application is intended for internal use by undergraduates, serving as a tool for managing courses and providing a more refined curriculum control with graphical representations and numerical indications of each student's academic progress.
 
-O intuito final da aplicação era lançar o aplicativo em servidor para que os alunos da universidade federal de santa catarina pudessem utilizar durante o dia a dia, porém, devido aos prazos e burocracias por parte da entidade de ensino ainda não foi possível executar o app em nível de produção. Porém, no final do semestre foi apresentado uma versão funcional sendo executava localmente, assim como podemos ver nas imagens exemplificando a funcionalidade do App.
+The ultimate goal of the application was to deploy it on a server so that students at the Federal University of Santa Catarina could use it in their daily activities. However, due to deadlines and bureaucratic processes from the educational institution, executing the app at the production level has not been possible yet. Nevertheless, by the end of the semester, a functional version was presented, running locally, as depicted in the images illustrating the app's functionality.
 
 ## Layout web
 
@@ -19,7 +19,7 @@ O intuito final da aplicação era lançar o aplicativo em servidor para que os 
 ![Web 5](https://github.com/guitakashiba/minhatrilhaAssets/blob/main/Historico.png)
 
 
-# Tecnologias utilizadas
+# Used Technologies
 ## Backend
 - JavaScript
 - Node.js
@@ -27,33 +27,33 @@ O intuito final da aplicação era lançar o aplicativo em servidor para que os 
 - HTML / CSS / JS / TypeScript
 - React
 - Ant Design
-## Implantação em produção
-- Banco de dados: SQLite
+## Production Deployment
+- Database: SQLite
 
-# Como executar o projeto
+# How to Run the Project
 
-Pré-requisitos: Node.js / npm
+Prerequisites: Node.js / npm
 
 ```bash
-# clonar repositório
+# Clone the repository
 git clone https://github.com/guitakashiba/appminhatrilha
 
-# instalar os módulos
+# Install the modules
 npm install
 
-# entrar na pasta do projeto backend
+# Navigate to the backend project folder
 cd backend
 
-# executar o projeto localmente
+# Run the project locally
 npm start
 
-# entrar na pasta do projeto frontend
+# Navigate to the frontend project folder
 cd frontend/antd-demo
 
-# executar o projeto localmente
+# Run the project locally
 npm start
 ```
-# Autor
+# Author
 
 Guilherme Takashiba
 
