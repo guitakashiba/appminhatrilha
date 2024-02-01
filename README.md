@@ -8,9 +8,15 @@ O intuito final da aplicação era lançar o aplicativo em servidor para que os 
 
 ## Layout web
 
-![Web 1](https://github.com/acenelio/assets/raw/main/sds1/web1.png)
+![Web 1](https://github.com/guitakashiba/minhatrilhaAssets/blob/main/Login.png)
 
-![Web 2](https://github.com/acenelio/assets/raw/main/sds1/web2.png)
+![Web 2](https://github.com/guitakashiba/minhatrilhaAssets/blob/main/DashboardZerada.png)
+
+![Web 3](https://github.com/guitakashiba/minhatrilhaAssets/blob/main/ListaDisciplinas.png)
+
+![Web 4](https://github.com/guitakashiba/minhatrilhaAssets/blob/main/Dashboard.png)
+
+![Web 5](https://github.com/guitakashiba/minhatrilhaAssets/blob/main/Historico.png)
 
 
 # Tecnologias utilizadas
